@@ -19,6 +19,8 @@ This is a small webapp to help plan out projects - a mix of both storyboard and 
 <br />
 *app/js/services/* contain services (none planned as of now)
 <br />
+*app/vendors/* contains plugins (JQuery, AngularJS, etc)
+<br />
 *app/res/* contain resources (images, videos, etc)
 <br />
 <br />
