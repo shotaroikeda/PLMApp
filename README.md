@@ -4,7 +4,7 @@
 This is a small webapp to help plan out projects - a mix of both storyboard and notetaking features as well as a full fledged chat client.
 
 ## Layout
-*dev\_notes* contain important information about the schematics of the application. As of now, only rough sketches are there.
+*dev\_notes/* contain important information about the schematics of the application. As of now, only rough sketches are there.
 <br />
 *app/* contains the application
 <br />
