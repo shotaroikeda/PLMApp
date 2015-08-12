@@ -7,7 +7,7 @@ This is a small webapp to help plan out projects - a mix of both storyboard and 
 *dev\_notes/* contain important information about the schematics of the application. As of now, only rough sketches are there.
 <br />
 <br />
-*app/* contains the application
+*app/* contains the application and other elements (JQuery, AngularJS, etc)
 <br />
 *app/css/* contains css elements
 <br />
@@ -18,8 +18,6 @@ This is a small webapp to help plan out projects - a mix of both storyboard and 
 *app/js/directives/* contain directives as well as the html for them
 <br />
 *app/js/services/* contain services (none planned as of now)
-<br />
-*app/vendors/* contains plugins (JQuery, AngularJS, etc)
 <br />
 *app/res/* contain resources (images, videos, etc)
 <br />
