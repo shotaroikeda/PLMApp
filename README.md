@@ -11,5 +11,6 @@ This is a small webapp to help plan out projects - a mix of both storyboard and 
 *app/js/controller/* contains the AngularJS controller
 *app/js/directives/* contain directives as well as the html for them
 *app/js/services/* contain services (none planned as of now)
+*app/res/* contain resources (images, videos, etc)
 *views/* contain templates for the different views - projects, storyboard, note view, etc.
 
