@@ -1,22 +1,106 @@
-# Some Resources
-[Canvas View](#canvas-view)
+# Resources for Views #
 
-# something cool #
+## Full Application View (Rough sketch) ##
 
-# anotherheader #
+![Full View of the Application](full_view.jpg)
 
-# lol #
+1. [Selection View](#selection-view)
+2. [StoryBoard View](#storyboard-view)
+3. [Detail View](#detail-view)
+4. [Canvas View](#canvas-view)
+5. [Other References](#other-references)
 
-
-
-Canvas View
-===========
-
-
-lower h
-=======
-
-lower h
-=======
+-------------------------------------------------------------------------------
 
 
+# Selection View #
+
+1. [Image](##image)
+2. [Resources](##resources)
+3. [Notes](##notes)
+
+## Image ##
+
+![Selection View Template](selection_view.jpg)
+
+## Resources ##
+
+**TODO: Add URLs for reference**
+
+## Notes ##
+
+**TODO: Add notes when working**
+
+
+-------------------------------------------------------------------------------
+
+
+# StoryBoard View #
+
+1. [Image](##image)
+2. [Resources](##resources)
+3. [Notes](##notes)
+
+## Image ##
+
+![Selection View Template](storyboard_view.jpg)
+
+## Resources ##
+
+**TODO: Add URLs for reference**
+
+## Notes ##
+
+**TODO: Add notes when working**
+
+
+-------------------------------------------------------------------------------
+
+
+# Detail View #
+
+1. [Image](##image)
+2. [Resources](##resources)
+3. [Notes](##notes)
+
+## Image ##
+
+![Selection View Template](detail_view.jpg)
+
+## Resources ##
+
+**TODO: Add URLs for reference**
+
+## Notes ##
+
+**TODO: Add notes when working**
+
+
+-------------------------------------------------------------------------------
+
+
+# Canvas View #
+
+1. [Image](##image)
+2. [Resources](##resources)
+3. [Notes](##notes)
+
+## Image ##
+
+![Selection View Template](canvas_view.jpg)
+
+## Resources ##
+
+1. [Complete tutorial on basic HTML 5 canvas creation](http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/)
+
+## Notes ##
+
+**TODO: Add notes when working**
+
+
+-------------------------------------------------------------------------------
+
+# Other Resources #
+
+1. [Free Icons](http://www.flaticon.com/)
+2. [Very Good WebAPI documentation (js, css, html, etc.)](https://developer.mozilla.org/en-US/)
