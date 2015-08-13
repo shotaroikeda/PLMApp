@@ -2,6 +2,15 @@ var context = $('#canvas_perfect')[0].getContext("2d");
 
 var paint = false;
 
+// colors
+var colorPurple = "#cb3594";
+var colorGreen = "#659b41";
+var colorYellow = "#ffcf33";
+var colorBrown = "#986928";
+
+var curColor = colorPurple;
+var clickColor = new Array();
+
 $('canvas').mousedown(function(e) {
     var mouseX = e.pageX - this.offsetLeft;
     var mouseY = e.pageY - this.offsetTop;
@@ -23,6 +32,7 @@ $('canvas').mouseup(function(e) {
     clickX = [];
     clickY = [];
     clickDrag = [];
+    curColor = [];
 });
 
 $('canvas').mouseleave(function(e) {
@@ -37,16 +47,17 @@ function addClick(x, y, dragging) {
     clickX.push(x);
     clickY.push(y);
     clickDrag.push(dragging);
+    clickColor.push(curColor);
 }
 
 function redraw() {
     // context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clear Canvas
-
-    context.strokeStyle = "#df4b26";
+    // context.strokeStyle = "#df4b26";
     context.lineJoin = "round";
     context.lineWidth = 5;
 
     for (var i=0; i < clickX.length; i++) {
+	context.strokeStyle = clickColor[i];
         context.beginPath();
         if(clickDrag[i]) {
             context.moveTo(clickX[i-1], clickY[i-1]);
@@ -58,3 +69,4 @@ function redraw() {
         context.stroke();
     }
 }
+
