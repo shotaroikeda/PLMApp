@@ -4,7 +4,7 @@
 
 ## Full Application View (Rough sketch) ##
 
-![Full View of the Application](full_view.jpg|width=300px)
+![Full View of the Application](full_view.jpg)
 
 1. [Selection View](#selection-view)
 2. [StoryBoard View](#storyboard-view)
@@ -23,7 +23,7 @@
 
 ## Image ##
 
-![Selection View Template](selection_view.jpg|width=300px)
+![Selection View Template](selection_view.jpg)
 
 ## Resources ##
 
@@ -45,7 +45,7 @@
 
 ## Image ##
 
-![Selection View Template](storyboard_view.jpg|width=300px)
+![Selection View Template](storyboard_view.jpg)
 
 ## Resources ##
 
@@ -67,7 +67,7 @@
 
 ## Image ##
 
-![Selection View Template](detail_view.jpg|width=300px)
+![Selection View Template](detail_view.jpg)
 
 ## Resources ##
 
@@ -89,7 +89,7 @@
 
 ## Image ##
 
-![Selection View Template](canvas_view.jpg|width=300px)
+![Selection View Template](canvas_view.jpg)
 
 ## Resources ##
 
