@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="format.css">
+
 # Resources for Views #
 
 ## Full Application View (Rough sketch) ##
@@ -16,8 +18,8 @@
 # Selection View #
 
 1. [Image](#image)
-2. [Resources](##resources)
-3. [Notes](##notes)
+2. [Resources](#resources)
+3. [Notes](#notes)
 
 ## Image ##
 
@@ -38,8 +40,8 @@
 # StoryBoard View #
 
 1. [Image](#image)
-2. [Resources](##resources)
-3. [Notes](##notes)
+2. [Resources](#resources)
+3. [Notes](#notes)
 
 ## Image ##
 
@@ -59,9 +61,9 @@
 
 # Detail View #
 
-1. [Image](##image)
-2. [Resources](##resources)
-3. [Notes](##notes)
+1. [Image](#image)
+2. [Resources](#resources)
+3. [Notes](#notes)
 
 ## Image ##
 
@@ -81,9 +83,9 @@
 
 # Canvas View #
 
-1. [Image](##image)
-2. [Resources](##resources)
-3. [Notes](##notes)
+1. [Image](#image)
+2. [Resources](#resources)
+3. [Notes](#notes)
 
 ## Image ##
 
