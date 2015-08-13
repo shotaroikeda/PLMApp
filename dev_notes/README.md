@@ -95,7 +95,11 @@
 
 ## Notes ##
 
-**TODO: Add notes when working**
+### Board Redrawing ###
+Some thoughts:
+- Need to worry about concurrency (eventually)
+- Need to find a better way then the link provided above (space concerns)
+- Find a way to implement dirty rectangles instead
 
 
 -------------------------------------------------------------------------------
