@@ -15,7 +15,7 @@
 
 # Selection View #
 
-1. [Image](##image)
+1. [Image](#image)
 2. [Resources](##resources)
 3. [Notes](##notes)
 
@@ -37,7 +37,7 @@
 
 # StoryBoard View #
 
-1. [Image](##image)
+1. [Image](#image)
 2. [Resources](##resources)
 3. [Notes](##notes)
 
