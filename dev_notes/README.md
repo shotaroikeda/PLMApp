@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="format.css">
-
 # Resources for Views #
 
 ## Full Application View (Rough sketch) ##
