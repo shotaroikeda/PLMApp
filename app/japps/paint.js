@@ -1,84 +1,99 @@
-var context = $('#canvas_perfect')[0].getContext("2d");
+///////////////////////////////////////////////////////////////////////////////////////////
+// This is a rewrite of paint.js                                                         //
+//                                                                                       //
+// The problem with the current paint.js is that it does not follow readable code        //
+// standards. In addition some functions are/were generally inefficent and should be     //
+// rewritten from the ground up.                                                         //
+//                                                                                       //
+// The original will stay there for backwards compatibility, until this one is complete. //
+///////////////////////////////////////////////////////////////////////////////////////////
 
-var paint = false;
+/////////////////////////////////////////////////////////////
+// Canvas Panel drawing related things. Not selected tools //
+/////////////////////////////////////////////////////////////
 
-// colors
-var colorPurple = "#cb3594";
-var colorGreen = "#659b41";
-var colorYellow = "#ffcf33";
-var colorBrown = "#986928";
+var canvasObj = {
+    // object variables
+    contextDOM: $('#mainCanvas')[0].getContext("2d"),
+    penDown: false,
 
-var curColor = colorPurple;
-var clickColor = new Array();
+    __previous_coord__: [undefined, undefined],
 
-context.canvas.width = 400;
-context.canvas.height = 400;
+    // Functions we don't want people using that much
+    __defaultSettings__: function() {
+        // Javascript pseudo constructor replacement
+        this.contextDOM.canvas.width = 600;
+        this.contextDOM.canvas.height = 600;
+
+        this.contextDOM.strokeStyle = "black";
+        this.contextDOM.lineJoin = "round";
+        this.contextDOM.linewidth = 5;
+    },
+
+    // Functions that will run often
+    changeColor: function() { // javascript varargs is strange...
+        // Expecting changeColor(r, g, b, a);
+        var args = Array.prototype.slice.call(arguments);
+
+        if(args.length != 4) {
+            args.push(1);
+        }
+
+        this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
+    },
+
+    clearCanvas: function () {
+        this.contextDOM.clearRect(0, 0,
+				  this.contextDOM.canvas.width, this.contextDOM.canvas.height);
+    },
+
+    draw: function(x, y, drag) {
+        this.contextDOM.beginPath();
+
+        if (drag) {
+            var prevX = this.__previous_coord__[0];
+            var prevY = this.__previous_coord__[1];
+            this.contextDOM.moveTo(prevX, prevY);
+        } else {
+            this.contextDOM.moveTo(x-1, y);
+        }
+        this.__previous_coord__ = [x, y];
+
+        this.contextDOM.lineTo(x, y);
+        this.contextDOM.closePath();
+        this.contextDOM.stroke();
+    }
+};
 
 $('canvas').mousedown(function(e) {
     var mouseX = e.pageX - this.offsetLeft;
     var mouseY = e.pageY - this.offsetTop;
 
-    paint = true;
-    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
-    redraw();
+    canvasObj.penDown = true;
+    canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
 });
 
 $('canvas').mousemove(function(e) {
-    if(paint) {
-        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-        redraw();
+    if(canvasObj.penDown) {
+        canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
     }
 });
 
 $('canvas').mouseup(function(e) {
-    paint = false;
-    clickX = [];
-    clickY = [];
-    clickDrag = [];
-    curColor = [];
+    canvasObj.penDown = false;
 });
 
 $('canvas').mouseleave(function(e) {
-    paint = false;
+    canvasObj.penDown = false;
 });
 
-var clickX = new Array();
-var clickY = new Array();
-var clickDrag = new Array();
+canvasObj.__defaultSettings__();
 
-function addClick(x, y, dragging) {
-    clickX.push(x);
-    clickY.push(y);
-    clickDrag.push(dragging);
-    clickColor.push(curColor);
-}
+////////////////////////////////////
+// Context Tool Related functions //
+////////////////////////////////////
 
-function redraw() {
-    // context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clear Canvas
-    // context.strokeStyle = "#df4b26";
-    context.lineJoin = "round";
-    context.lineWidth = 5;
-
-    for (var i=0; i < clickX.length; i++) {
-	context.strokeStyle = clickColor[i];
-        context.beginPath();
-        if(clickDrag[i]) {
-            context.moveTo(clickX[i-1], clickY[i-1]);
-        } else {
-            context.moveTo(clickX[i]-1, clickY[i]);
-        }
-        context.lineTo(clickX[i], clickY[i]);
-        context.closePath();
-        context.stroke();
-    }
-}
-
-$('#cls').click(function() {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+// Clear Canvas
+$('#cls').click(function () {
+    canvasObj.clearCanvas();
 });
-
-$('#canvas-perfect').resizable();
-
-function expandCanvas(newWidth, newHeight) {
-    
-}
