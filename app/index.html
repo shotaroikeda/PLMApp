@@ -3,11 +3,19 @@
         <script src="jquery-2.1.4.min.js" /></script>
         <script src="angular-1.4.3/angular.min.js"></script>
         <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+        <script src="jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+
+	<!-- make JQuery-UI work -->
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
 
         <head>
         </head>
         <body>
-                <canvas id="canvas_perfect" width="800" height="600" style="border-style:solid;"></canvas>
+                <div class="canvas">
+                        <canvas id="canvas_perfect" style="border-style:solid;overflow:hidden;"></canvas>
+                        <br />
+                        <button type="button" id="cls" class="btn btn-default">Clear</button>
+                </div>
         </body>
 
         <!--custom js goes here...-->
