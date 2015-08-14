@@ -11,6 +11,7 @@ var colorBrown = "#986928";
 var curColor = colorPurple;
 var clickColor = new Array();
 
+
 $('canvas').mousedown(function(e) {
     var mouseX = e.pageX - this.offsetLeft;
     var mouseY = e.pageY - this.offsetTop;
@@ -70,3 +71,8 @@ function redraw() {
     }
 }
 
+$('#cls').click(function() {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+});
+
+$('#canvas-perfect').resizable();
