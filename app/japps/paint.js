@@ -11,6 +11,8 @@ var colorBrown = "#986928";
 var curColor = colorPurple;
 var clickColor = new Array();
 
+context.canvas.width = 400;
+context.canvas.height = 400;
 
 $('canvas').mousedown(function(e) {
     var mouseX = e.pageX - this.offsetLeft;
