@@ -1,8 +1,10 @@
 # Resources for Views #
 
-## Full Application View ##
+## Full Application View (Rough Sketch) ##
 
 ![Full View of the Application](full_view.jpg)
+
+## Table of Contents ##
 
 1. [Selection View](#selection-view)
 2. [StoryBoard View](#storyboard-view)
@@ -31,7 +33,7 @@
 
 **TODO: Add notes when working**
 
-[back to top](#full-application-view)
+[back to top](#table-of-contents)
 
 
 -------------------------------------------------------------------------------
@@ -55,7 +57,7 @@
 
 **TODO: Add notes when working**
 
-[back to top](#full-application-view)
+[back to top](#table-of-contents)
 
 -------------------------------------------------------------------------------
 
@@ -78,7 +80,7 @@
 
 **TODO: Add notes when working**
 
-[back to top](#full-application-view)
+[back to top](#table-of-contents)
 
 
 -------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ Some thoughts:
 - Need to find a better way then the link provided above (space concerns)
 - Find a way to implement dirty rectangles instead
 
-[back to top](#full-application-view)
+[back to top](#table-of-contents)
 
 -------------------------------------------------------------------------------
 
@@ -115,4 +117,4 @@ Some thoughts:
 1. [Free Icons](http://www.flaticon.com/)
 2. [Very Good WebAPI documentation (js, css, html, etc.)](https://developer.mozilla.org/en-US/)
 
-[back to top](#full-application-view)
+[back to top](#table-of-contents)
