@@ -78,3 +78,7 @@ $('#cls').click(function() {
 });
 
 $('#canvas-perfect').resizable();
+
+function expandCanvas(newWidth, newHeight) {
+    
+}
