@@ -104,7 +104,7 @@ Some thoughts:
 
 -------------------------------------------------------------------------------
 
-# Other Resources #
+# Other References #
 
 1. [Free Icons](http://www.flaticon.com/)
 2. [Very Good WebAPI documentation (js, css, html, etc.)](https://developer.mozilla.org/en-US/)
