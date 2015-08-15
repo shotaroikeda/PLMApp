@@ -17,6 +17,18 @@ var canvasObj = {
     contextDOM: $('#mainCanvas')[0].getContext("2d"),
     penDown: false,
 
+    RGBA: {
+        parseValue: function(val) {
+            if (isNaN(parseInt(val)) || val > 255 || val < 0)
+                val = 0;
+            return val;
+        },
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 1
+    },
+
     __previous_coord__: [undefined, undefined],
 
     // Functions we don't want people using that much
@@ -31,8 +43,8 @@ var canvasObj = {
     },
 
     // Functions that will run often
-    changeColor: function() { // javascript varargs is strange...
-        // Expecting changeColor(r, g, b, a);
+    setColor: function() { // javascript varargs is strange...
+        // Expecting setColor(r, g, b, a);
         var args = Array.prototype.slice.call(arguments);
 
         if(args.length != 4) {
@@ -44,7 +56,7 @@ var canvasObj = {
 
     clearCanvas: function () {
         this.contextDOM.clearRect(0, 0,
-				  this.contextDOM.canvas.width, this.contextDOM.canvas.height);
+                                  this.contextDOM.canvas.width, this.contextDOM.canvas.height);
     },
 
     draw: function(x, y, drag) {
@@ -93,7 +105,33 @@ canvasObj.__defaultSettings__();
 // Context Tool Related functions //
 ////////////////////////////////////
 
-// Clear Canvas
+/* Clear Canvas */
 $('#cls').click(function () {
     canvasObj.clearCanvas();
 });
+
+/* Color change listener */
+$('#RGBA').keyup(function(){
+
+    $('#red').keyup(function(){
+        canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
+    })
+    $('#green').keyup(function(){
+        canvasObj.RGBA.green = canvasObj.RGBA.parseValue($('#green')[0].value);
+    })
+    $('#blue').keyup(function(){
+        canvasObj.RGBA.blue = canvasObj.RGBA.parseValue($('#blue')[0].value);
+    })
+    $('#alpha').keyup(function(){
+        var a = $('#alpha')[0].value;
+        if (a > 1 || a < 0)
+            a = 1;
+        canvasObj.RGBA.alpha = a;
+    })
+    
+    canvasObj.setColor(canvasObj.RGBA.red,
+                       canvasObj.RGBA.green,
+                       canvasObj.RGBA.blue,
+                       canvasObj.RGBA.alpha);
+    
+}) // End color change acions
