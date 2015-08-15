@@ -138,7 +138,8 @@ $('#RGBA').keyup(function(){
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
     
-}) // End color change actions
+});
+// End color change actions
 
 /* Brush listeners */
 $('#size').keyup(function() {
