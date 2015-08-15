@@ -10,8 +10,8 @@
         <!-- make JQuery-UI work -->
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
 
-	<!-- CSS awesomeness -->
-	<link rel="stylesheet" href="bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+        <!-- CSS awesomeness -->
+        <link rel="stylesheet" href="bootstrap-3.3.5-dist/css/bootstrap.min.css" />
 
         <head>
                 <title>Project Layout Manager Application</title>
@@ -27,8 +27,8 @@
                         says "Potato" for the Size instead of changing it to the automatic default 1)
                         We might need to use AngularJS to fix this later, or use javascript to change the text
                         -->
-                        Size:
-                        <div class="input-group">
+                        <span class="toolbar-desc">Size:</span>
+                        <div class="input-group input-group-sm" id="brush-size" style="max-width:100px;">
                                 <span class="input-group-addon" id="#canvas-minus"> - </span>
                                 <input type="text" class="form-control" id="size" value ="1">
                                 <span class="input-group-addon" id="#canvas-plus"> + </span>

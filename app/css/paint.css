@@ -2,3 +2,14 @@ div > #canvas {
     text-align:center;
     margin: auto;
 }
+
+input {
+    text-align:center;
+}
+
+
+
+.toolbar-desc {
+    color: grey;
+    font-weight: 900;
+}
