@@ -28,6 +28,7 @@ var canvasObj = {
         blue: 0,
         alpha: 1
     },
+    penSize: 5,
 
     __previous_coord__: [undefined, undefined],
 
@@ -53,8 +54,11 @@ var canvasObj = {
 
         this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
     },
+    setSize: function(size) {
+	this.contextDOM.lineWidth = size;
+    },
 
-    clearCanvas: function () {
+    clearCanvas: function() {
         this.contextDOM.clearRect(0, 0,
                                   this.contextDOM.canvas.width, this.contextDOM.canvas.height);
     },
@@ -134,4 +138,21 @@ $('#RGBA').keyup(function(){
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
     
-}) // End color change acions
+}) // End color change actions
+
+/* Brush listeners */
+$('#size').keyup(function() {
+    var size = $('#size')[0].value;
+    if (isNaN(parseInt(size)) || size < 1 || size > 100)
+	size = 1;
+    canvasObj.setSize(size);
+})
+$('#eraser').click(function() {
+    canvasObj.setColor(255, 255, 255, 1);
+})
+$('#pen').click(function() {
+    canvasObj.setColor(canvasObj.RGBA.red,
+                       canvasObj.RGBA.green,
+                       canvasObj.RGBA.blue,
+                       canvasObj.RGBA.alpha);
+})
