@@ -40,7 +40,7 @@ var canvasObj = {
 
         this.contextDOM.strokeStyle = "black";
         this.contextDOM.lineJoin = "round";
-        this.contextDOM.linewidth = 5;
+        this.contextDOM.lineWidth = 5;
     },
 
     // Functions that will run often
@@ -116,7 +116,7 @@ $('#cls').click(function () {
 
 /* Color change listener */
 $('#RGBA').keyup(function(){
-
+    console.log("ran RGBA up");
     $('#red').keyup(function(){
         canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
     });
@@ -137,6 +137,7 @@ $('#RGBA').keyup(function(){
                        canvasObj.RGBA.green,
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
+    $('#fancy-color-preview')[0].style.backgroundColor = canvasObj.contextDOM.strokeStyle;
 });
 // End color change actions
 
