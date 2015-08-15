@@ -7,9 +7,17 @@ input {
     text-align:center;
 }
 
-
+/* Toolbar inputs get 100px width per span */
 
 .toolbar-desc {
     color: grey;
     font-weight: 900;
+    font-size: 150%;
+}
+
+#fancy-color-preview {
+    width: 10px;
+    height: 10px;
+    border-style: solid;
+    border-width: 2px;
 }

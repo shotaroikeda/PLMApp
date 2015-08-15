@@ -35,8 +35,8 @@ var canvasObj = {
     // Functions we don't want people using that much
     __defaultSettings__: function() {
         // Javascript pseudo constructor replacement
-        this.contextDOM.canvas.width = 600;
-        this.contextDOM.canvas.height = 600;
+        this.contextDOM.canvas.width = window.innerWidth;
+        this.contextDOM.canvas.height = window.innerHeight;
 
         this.contextDOM.strokeStyle = "black";
         this.contextDOM.lineJoin = "round";

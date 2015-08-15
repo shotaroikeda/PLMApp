@@ -20,26 +20,60 @@
         <!-- Application CSS -->
         <link rel="stylesheet" href="css/paint.css" />
         <body>
-                <div id="canvas-toolbar">
+                <div id="canvas-toolbar" class="container-fluid">
                         <!--
                         At the current development process, the values are limited through
                         javascript. However, it still shows up to the user as whatever they put in (i.e.
                         says "Potato" for the Size instead of changing it to the automatic default 1)
                         We might need to use AngularJS to fix this later, or use javascript to change the text
                         -->
-                        <span class="toolbar-desc">Size:</span>
-                        <div class="input-group input-group-sm" id="brush-size" style="max-width:100px;">
-                                <span class="input-group-addon" id="#canvas-minus"> - </span>
-                                <input type="text" class="form-control" id="size" value ="1">
-                                <span class="input-group-addon" id="#canvas-plus"> + </span>
+                        <div class="row">
+                                <span class="toolbar-desc col-md-1">Size:</span>
+                                <div class="col-md-2">
+                                        <span class="input-group input-group-sm" id="brush-size">
+                                                <span class="input-group-addon" id="#canvas-minus"> - </span>
+                                                <input type="text" class="form-control" id="size" value ="1">
+                                                <span class="input-group-addon" id="#canvas-plus"> + </span>
+                                        </span>
+                                </div>
                         </div>
-                        <form id ="RGBA">
-                                RGBA:
-                                <input type="text" id="red" value="0">
-                                <input type="text" id="green" value="0">
-                                <input type="text" id="blue" value="0">
-                                <input type="text" id="alpha" value="1">
-                        </form>
+
+                        <div class="row">
+                                <span class="toolbar-desc col-md-1">RGBA:</span>
+                                <div class="col-md-2">
+                                        <span class="input-group input-group-sm" id="RGBA">
+                                                <span class="input-group-addon" id="#red-minus"> - </span>
+                                                <input type="text" class="form-control" id="red" value="0">
+                                                <span class="input-group-addon" id="#red-plus"> + </span>
+                                        </span>
+                                </div>
+
+                                <div class="col-md-2">
+                                        <span class="input-group input-group-sm" id="RGBA">
+                                                <span class="input-group-addon" id="#green-minus"> - </span>
+                                                <input type="text" class="form-control" id="green" value="0">
+                                                <span class="input-group-addon" id="#green-plus"> + </span>
+                                        </span>
+                                </div>
+
+                                <div class="col-md-2">
+                                        <span class="input-group input-group-sm" id="RGBA">
+                                                <span class="input-group-addon" id="#blue-minus"> - </span>
+                                                <input type="text" class="form-control" id="blue" value="0">
+                                                <span class="input-group-addon" id="#blue-plus"> + </span>
+                                        </span>
+                                </div>
+
+                                <div class="col-md-2">
+                                        <span class="input-group input-group-sm" id="RGBA">
+                                                <span class="input-group-addon" id="#alpha-minus"> - </span>
+                                                <input type="text" class="form-control" id="alpha" value="1">
+                                                <span class="input-group-addon" id="#alpha-plus"> + </span>
+                                        </span>
+                                </div>
+				<div class="col-md-2" id="fancy-color-preivew">
+				</div>
+                        </div>
                         <button type="button" id="cls" class="btn btn-default">Clear</button>
                         <button type="button" id="eraser" class="btn btn-default">Eraser</button>
                         <button type="button" id="pen" class="btn btn-default">Pen</button>
