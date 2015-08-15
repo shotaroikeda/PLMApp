@@ -7,37 +7,41 @@
         <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
         <script src="jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 
-	<!-- make JQuery-UI work -->
+        <!-- make JQuery-UI work -->
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
 
         <head>
-            <title>Project Layout Manager Application</title>
+                <title>Project Layout Manager Application</title>
         </head>
 
+        <!-- Application CSS -->
+        <link rel="stylesheet" href="css/paint.css" />
         <body>
-                <div class="canvas">
-                        <canvas id="mainCanvas" style="border-style:solid; cursor:crosshair"></canvas>
-                        <br />
-                        <button type="button" id="cls" class="btn btn-default">Clear</button>
-			<button type="button" id="eraser" class="btn btn-default">Eraser</button> 
-			<button type="button" id="pen" class="btn btn-default">Pen</button>
-			<!--
-			At the current development process, the values are limited through
-			javascript. However, it still shows up to the user as whatever they put in (i.e.
-			says "Potato" for the Size instead of changing it to the automatic default 1)
-			We might need to use AngularJS to fix this later, or use javascript to change the text
-			-->
-			<form>
-				Size:
-				<input type="text" id="size" value ="1">
-			</form>
-			<form id ="RGBA">
+                <div id="canvas-toolbar">
+                        <!--
+                        At the current development process, the values are limited through
+                        javascript. However, it still shows up to the user as whatever they put in (i.e.
+                        says "Potato" for the Size instead of changing it to the automatic default 1)
+                        We might need to use AngularJS to fix this later, or use javascript to change the text
+                        -->
+                        <form>
+                                Size:
+                                <input type="text" id="size" value ="1">
+                        </form>
+                        <form id ="RGBA">
                                 RGBA:
                                 <input type="text" id="red" value="0">
                                 <input type="text" id="green" value="0">
-				<input type="text" id="blue" value="0">
-				<input type="text" id="alpha" value="1">
-			</form>
+                                <input type="text" id="blue" value="0">
+                                <input type="text" id="alpha" value="1">
+                        </form>
+                        <button type="button" id="cls" class="btn btn-default">Clear</button>
+                        <button type="button" id="eraser" class="btn btn-default">Eraser</button>
+                        <button type="button" id="pen" class="btn btn-default">Pen</button>
+                </div>
+                <div class="canvas">
+                        <canvas id="mainCanvas" style="border-style:solid; cursor:crosshair"></canvas>
+                        <br />
                 </div>
         </body>
 
