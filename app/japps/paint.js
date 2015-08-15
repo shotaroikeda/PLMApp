@@ -119,25 +119,24 @@ $('#RGBA').keyup(function(){
 
     $('#red').keyup(function(){
         canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
-    })
+    });
     $('#green').keyup(function(){
         canvasObj.RGBA.green = canvasObj.RGBA.parseValue($('#green')[0].value);
-    })
+    });
     $('#blue').keyup(function(){
         canvasObj.RGBA.blue = canvasObj.RGBA.parseValue($('#blue')[0].value);
-    })
+    });
     $('#alpha').keyup(function(){
         var a = $('#alpha')[0].value;
         if (a > 1 || a < 0)
             a = 1;
         canvasObj.RGBA.alpha = a;
-    })
+    });
     
     canvasObj.setColor(canvasObj.RGBA.red,
                        canvasObj.RGBA.green,
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
-    
 });
 // End color change actions
 
@@ -158,4 +157,8 @@ $('#pen').click(function() {
                        canvasObj.RGBA.green,
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
+});
+
+// startup functions
+$(document).ready(function () {
 });
