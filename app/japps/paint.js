@@ -18,17 +18,35 @@ var canvasObj = {
     penDown: false,
 
     RGBA: {
+        increment: function(val, id) {
+            if (val < 255) {
+                ++val;
+                $(id).val(val);
+            }
+            return val;
+        },
+        decrement: function(val, id) {
+            if (val > 0) {
+                --val;
+                $(id).val(val);
+	    }
+            return val;
+        },
         parseValue: function(val) {
             if (isNaN(parseInt(val)) || val > 255 || val < 0)
                 val = 0;
             return val;
         },
+	updateValue: function(val, id) {
+	    if (isNaN(val) || val > 255 || val < 0)
+		val = 0;
+	    $(id).val(val);
+	},
         red: 0,
         green: 0,
         blue: 0,
         alpha: 1
     },
-    penSize: 5,
 
     __previous_coord__: [undefined, undefined],
 
@@ -44,6 +62,14 @@ var canvasObj = {
     },
 
     // Functions that will run often
+    applyRGBA: function() {
+        this.setColor(this.RGBA.red,
+                      this.RGBA.green,
+                      this.RGBA.blue,
+                      this.RGBA.alpha);
+        $('#fancy-color-preview')[0].style.backgroundColor = this.contextDOM.strokeStyle;
+    },
+
     setColor: function() { // javascript varargs is strange...
         // Expecting setColor(r, g, b, a);
         var args = Array.prototype.slice.call(arguments);
@@ -55,7 +81,9 @@ var canvasObj = {
         this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
     },
     setSize: function(size) {
-	this.contextDOM.lineWidth = size;
+        if (isNaN(parseInt(size)) || size < 1 || size > 100)
+            size = 1;
+        this.contextDOM.lineWidth = size;
     },
 
     clearCanvas: function() {
@@ -115,38 +143,85 @@ $('#cls').click(function () {
 });
 
 /* Color change listener */
-$('#RGBA').keyup(function(){
-    console.log("ran RGBA up");
-    $('#red').keyup(function(){
-        canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
-    });
-    $('#green').keyup(function(){
-        canvasObj.RGBA.green = canvasObj.RGBA.parseValue($('#green')[0].value);
-    });
-    $('#blue').keyup(function(){
-        canvasObj.RGBA.blue = canvasObj.RGBA.parseValue($('#blue')[0].value);
-    });
-    $('#alpha').keyup(function(){
-        var a = $('#alpha')[0].value;
-        if (a > 1 || a < 0)
-            a = 1;
-        canvasObj.RGBA.alpha = a;
-    });
-    
-    canvasObj.setColor(canvasObj.RGBA.red,
-                       canvasObj.RGBA.green,
-                       canvasObj.RGBA.blue,
-                       canvasObj.RGBA.alpha);
-    $('#fancy-color-preview')[0].style.backgroundColor = canvasObj.contextDOM.strokeStyle;
+/*** Note: I'm not sure if this can be cleaned up or put into the canvasObj
+     instead of being "global" functions ***/
+// Manual value input
+$('#red').keyup(function(){
+    canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
+    canvasObj.applyRGBA();
+});
+$('#green').keyup(function(){
+    canvasObj.RGBA.green = canvasObj.RGBA.parseValue($('#green')[0].value);
+    canvasObj.applyRGBA();
+});
+$('#blue').keyup(function(){
+    canvasObj.RGBA.blue = canvasObj.RGBA.parseValue($('#blue')[0].value);
+    canvasObj.applyRGBA();
+});
+$('#alpha').keyup(function(){
+    var a = $('#alpha')[0].value;
+    if (a > 1 || a < 0)
+        a = 1;
+    canvasObj.RGBA.alpha = a;
+    canvasObj.applyRGBA();
+});
+$('#red').focusout(function(){
+    canvasObj.RGBA.updateValue(canvasObj.RGBA.red, '#red');
+});
+$('#green').focusout(function(){
+    canvasObj.RGBA.updateValue(canvasObj.RGBA.green, '#green');
+});
+$('#blue').focusout(function(){
+    canvasObj.RGBA.updateValue(canvasObj.RGBA.blue, '#blue');
+});
+$('#alpha').focusout(function(){
+    canvasObj.RGBA.updateValue(canvasObj.RGBA.alpha, '#alpha');
+});
+// Click + or - actions
+$('#red-minus').click(function(){
+    canvasObj.RGBA.red = canvasObj.RGBA.decrement(canvasObj.RGBA.red, '#red');
+    canvasObj.applyRGBA();
+});
+$('#red-plus').click(function(){
+    canvasObj.RGBA.red = canvasObj.RGBA.increment(canvasObj.RGBA.red, '#red');
+    canvasObj.applyRGBA();
+});
+$('#green-minus').click(function(){
+    canvasObj.RGBA.green = canvasObj.RGBA.decrement(canvasObj.RGBA.green, '#green');
+    canvasObj.applyRGBA();
+});
+$('#green-plus').click(function(){
+    canvasObj.RGBA.green = canvasObj.RGBA.increment(canvasObj.RGBA.green, '#green');
+    canvasObj.applyRGBA();
+});
+$('#blue-minus').click(function(){
+    canvasObj.RGBA.blue = canvasObj.RGBA.decrement(canvasObj.RGBA.blue, '#blue');
+    canvasObj.applyRGBA();
+});
+$('#blue-plus').click(function(){
+    canvasObj.RGBA.blue = canvasObj.RGBA.increment(canvasObj.RGBA.blue, '#blue');
+    canvasObj.applyRGBA();
+});
+// Can't do val-=0.1 because of float rouding errors
+$('#alpha-minus').click(function(){
+    if (canvasObj.RGBA.alpha > 0) {
+	canvasObj.RGBA.alpha = (parseFloat(canvasObj.RGBA.alpha)*100 - 10)/100;
+	$('#alpha').val(canvasObj.RGBA.alpha);
+    }
+    canvasObj.applyRGBA();
+});
+$('#alpha-plus').click(function(){
+    if (canvasObj.RGBA.alpha < 1) {
+	canvasObj.RGBA.alpha = (parseFloat(canvasObj.RGBA.alpha)*100 + 10)/100;
+	$('#alpha').val(canvasObj.RGBA.alpha);
+    }
+    canvasObj.applyRGBA();
 });
 // End color change actions
 
 /* Brush listeners */
 $('#size').keyup(function() {
-    var size = $('#size')[0].value;
-    if (isNaN(parseInt(size)) || size < 1 || size > 100)
-	size = 1;
-    canvasObj.setSize(size);
+    canvasObj.setSize($('#size')[0].value);
 });
 
 $('#eraser').click(function() {
