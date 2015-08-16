@@ -32,18 +32,18 @@ ColorComponent.prototype = {
     changeComponentValue: function(change) {
         this.componentValue += change;
         this.componentValue %= 255;
-        $(id).val(this.componentValue);
+        $(this.id).val(this.componentValue);
     },
     //Manual number input
     parseValue: function(val) {
         if (isNaN(parseInt(val)) || val > 255 || val < 0)
             val = 0;
-        $(id).val(val);
+        $(this.id).val(val);
         componentValue = val;
     },
     //check if update value is necessary
     updateValue: function() {
-        $(id).val(this.componentValue);
+        $(this.id).val(this.componentValue);
     }
 };
 
