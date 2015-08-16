@@ -12,41 +12,50 @@
 // Canvas Panel drawing related things. Not selected tools //
 /////////////////////////////////////////////////////////////
 
+//CONSTANTS - use for indexing canvasobj colorcomponents
+var RED = 0;
+var GREEN = 1;
+var BLUE = 2;
+var ALPHA = 3;
+
+function ColorComponent(id) {
+    this.id = id;
+}
+
+ColorComponent.prototype = {
+    //stores ID of the class
+    id: "";
+
+    //Changes component value by a +1 or -1
+    changeComponentValue: function(change) {
+        val += change;
+        val %= 255;
+        $(id).val(val);
+        componentValue = val;
+    }
+    //Manual number input
+    parseValue: function(val) {
+        if (isNaN(parseInt(val)) || val > 255 || val < 0)
+            val = 0;
+        $(id).val(val)
+        componentValue = val;
+    },
+    //check if update value is necessary
+    updateValue: function() {
+        $(id).val(componentValue);
+    },
+        componentValue = 0;
+    },
+};
+
 var canvasObj = {
     // object variables
     contextDOM: $('#mainCanvas')[0].getContext("2d"),
     penDown: false,
+    //Valid draw modes: pen, eraser, bucket
+    currentDrawMode: "pen",
 
-    RGBA: {
-        increment: function(val, id) {
-            if (val < 255) {
-                ++val;
-                $(id).val(val);
-            }
-            return val;
-        },
-        decrement: function(val, id) {
-            if (val > 0) {
-                --val;
-                $(id).val(val);
-	    }
-            return val;
-        },
-        parseValue: function(val) {
-            if (isNaN(parseInt(val)) || val > 255 || val < 0)
-                val = 0;
-            return val;
-        },
-	updateValue: function(val, id) {
-	    if (isNaN(val) || val > 255 || val < 0)
-		val = 0;
-	    $(id).val(val);
-	},
-        red: 0,
-        green: 0,
-        blue: 0,
-        alpha: 1
-    },
+    colorComponents: [new ColorComponent("#red"), new ColorComponent("#green"), new ColorComponent("#blue"), new ColorComponent("#alpha")],
 
     __previous_coord__: [undefined, undefined],
 
@@ -61,16 +70,17 @@ var canvasObj = {
         this.contextDOM.lineWidth = 5;
     },
 
-    // Functions that will run often
+    //Sets the color of the preview box to the currently selected RGBA value
     applyRGBA: function() {
-        this.setColor(this.RGBA.red,
-                      this.RGBA.green,
-                      this.RGBA.blue,
-                      this.RGBA.alpha);
+        this.setColor(this.colorComponents[RED].componentValue,
+                      this.colorComponents[GREEN].componentValue,
+                      this.colorComponents[BLUE].componentValue,
+                      this.colorComponents[ALPHA].componentValue);
         $('#fancy-color-preview')[0].style.backgroundColor = this.contextDOM.strokeStyle;
     },
 
-    setColor: function() { // javascript varargs is strange...
+    //Sets the color of the stroke
+    setColor: function() {
         // Expecting setColor(r, g, b, a);
         var args = Array.prototype.slice.call(arguments);
 
@@ -146,74 +156,76 @@ $('#cls').click(function () {
 /*** Note: I'm not sure if this can be cleaned up or put into the canvasObj
      instead of being "global" functions ***/
 // Manual value input
-$('#red').keyup(function(){
-    canvasObj.RGBA.red = canvasObj.RGBA.parseValue($('#red')[0].value);
+$('#red').keyup(function() {
+    canvasObj.colorComponents[RED].parseValue($('#red')[0].value);
     canvasObj.applyRGBA();
 });
-$('#green').keyup(function(){
-    canvasObj.RGBA.green = canvasObj.RGBA.parseValue($('#green')[0].value);
+$('#green').keyup(function() {
+    canvasObj.colorComponents[GREEN].parseValue($('#green')[0].value);
     canvasObj.applyRGBA();
 });
-$('#blue').keyup(function(){
-    canvasObj.RGBA.blue = canvasObj.RGBA.parseValue($('#blue')[0].value);
+$('#blue').keyup(function() {
+    canvasObj.colorComponents[BLUE].parseValue($('#blue')[0].value);
     canvasObj.applyRGBA();
 });
-$('#alpha').keyup(function(){
-    var a = $('#alpha')[0].value;
-    if (a > 1 || a < 0)
-        a = 1;
-    canvasObj.RGBA.alpha = a;
+$('#alpha').keyup(function() {
+    var alph = $('#alpha')[0].value;
+    if (alph > 1 || a < 0) a = 1;
+    canvasObj.colorComponents[ALPHA].parseValue($('#alpha')[0].value);
     canvasObj.applyRGBA();
 });
-$('#red').focusout(function(){
-    canvasObj.RGBA.updateValue(canvasObj.RGBA.red, '#red');
+
+//TODO check if these are necessary
+$('#red').focusout(function() {
+    canvasObj.colorComponents[RED].updateValue();
 });
-$('#green').focusout(function(){
-    canvasObj.RGBA.updateValue(canvasObj.RGBA.green, '#green');
+$('#green').focusout(function() { 
+    canvasObj.colorComponents[GREEN].updateValue();
 });
-$('#blue').focusout(function(){
-    canvasObj.RGBA.updateValue(canvasObj.RGBA.blue, '#blue');
+$('#blue').focusout(function() {
+    canvasObj.colorComponents[BLUE].updateValue();
 });
-$('#alpha').focusout(function(){
-    canvasObj.RGBA.updateValue(canvasObj.RGBA.alpha, '#alpha');
+$('#alpha').focusout(function() {
+    canvasObj.colorComponents[ALPHA].updateValue();
 });
 // Click + or - actions
-$('#red-minus').click(function(){
-    canvasObj.RGBA.red = canvasObj.RGBA.decrement(canvasObj.RGBA.red, '#red');
+$('#red-minus').click(function() {
+    canvasObj.colorComponents[RED].changeComponentValue(-1);
     canvasObj.applyRGBA();
 });
-$('#red-plus').click(function(){
-    canvasObj.RGBA.red = canvasObj.RGBA.increment(canvasObj.RGBA.red, '#red');
+$('#red-plus').click(function() {
+    canvasObj.colorComponents[RED].changeComponentValue(1);
     canvasObj.applyRGBA();
 });
-$('#green-minus').click(function(){
-    canvasObj.RGBA.green = canvasObj.RGBA.decrement(canvasObj.RGBA.green, '#green');
+$('#green-minus').click(function() {
+    canvasObj.colorComponents[GREEN].changeComponentValue(-1);
     canvasObj.applyRGBA();
 });
-$('#green-plus').click(function(){
-    canvasObj.RGBA.green = canvasObj.RGBA.increment(canvasObj.RGBA.green, '#green');
+$('#green-plus').click(function() {
+    canvasObj.colorComponents[GREEN].changeComponentValue(1);
     canvasObj.applyRGBA();
 });
-$('#blue-minus').click(function(){
-    canvasObj.RGBA.blue = canvasObj.RGBA.decrement(canvasObj.RGBA.blue, '#blue');
+$('#blue-minus').click(function() {
+    canvasObj.colorComponents[BLUE].changeComponentValue(-1);
     canvasObj.applyRGBA();
 });
-$('#blue-plus').click(function(){
-    canvasObj.RGBA.blue = canvasObj.RGBA.increment(canvasObj.RGBA.blue, '#blue');
+$('#blue-plus').click(function() {
+    canvasObj.colorComponents[BLUE].changeComponentValue(1);
     canvasObj.applyRGBA();
 });
 // Can't do val-=0.1 because of float rouding errors
+//TODO look into why this isnt calling the method
 $('#alpha-minus').click(function(){
     if (canvasObj.RGBA.alpha > 0) {
-	canvasObj.RGBA.alpha = (parseFloat(canvasObj.RGBA.alpha)*100 - 10)/100;
-	$('#alpha').val(canvasObj.RGBA.alpha);
+	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 - 10)/100;
+	   $('#alpha').val(canvasObj.RGBA.alpha);
     }
     canvasObj.applyRGBA();
 });
 $('#alpha-plus').click(function(){
     if (canvasObj.RGBA.alpha < 1) {
-	canvasObj.RGBA.alpha = (parseFloat(canvasObj.RGBA.alpha)*100 + 10)/100;
-	$('#alpha').val(canvasObj.RGBA.alpha);
+	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 + 10)/100;
+	   $('#alpha').val(canvasObj.RGBA.alpha);
     }
     canvasObj.applyRGBA();
 });
@@ -239,16 +251,18 @@ $('#size').focusout(function() {
 /* brush icons */
 $('#eraser').click(function() {
     canvasObj.setColor(255, 255, 255, 1);
+    canvasObj.currentDrawMode("eraser");
 
     $('.tool-active').removeClass('tool-active');
     $('#eraser').addClass('tool-active');
 });
 
 $('#pen').click(function() {
-    canvasObj.setColor(canvasObj.RGBA.red,
-                       canvasObj.RGBA.green,
-                       canvasObj.RGBA.blue,
-                       canvasObj.RGBA.alpha);
+    canvasObj.setColor(canvasObj.colorComponents[RED].componentValue,
+                       canvasObj.colorComponents[GREEN].componentValue,
+                       canvasObj.colorComponents[BLUE].componentValue,
+                       canvasObj.colorComponents[ALPHA].componentValue);
+    canvasObj.currentDrawMode("pen");
 
     $('.tool-active').removeClass('tool-active');
     $('#pen').addClass('tool-active');
