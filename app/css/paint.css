@@ -1,3 +1,7 @@
+/***************************/
+/* Canvas elements go here */
+/***************************/
+
 div > #canvas {
     text-align:center;
     margin: auto;
@@ -11,18 +15,12 @@ div > #canvas {
     margin-top: 50px;
 }
 
-input {
-    text-align:center;
-}
-
-.inputbox {
-    padding: 2px;
-
-}
+/***********************************/
+/* Navigation bar elements go here */
+/***********************************/
 
 .navbar-container {
     margin-left: 0px;
-
 }
 
 .navbar-header {
