@@ -4,8 +4,11 @@ div > #canvas {
 }
 
 #mainCanvas {
-    border-style: solid;
     cursor:crosshair;
+}
+
+.canvas {
+    margin-top: 50px;
 }
 
 input {
@@ -15,7 +18,7 @@ input {
 /* Toolbar inputs get 100px width per span */
 
 .toolbar-desc {
-    color: grey;
+    color: #bebebe;
     font-weight: 900;
     font-size: 150%;
 }
@@ -28,4 +31,20 @@ input {
 
 .form-control {
     min-width: 50px;
+}
+
+.inputbox {
+    padding: 2px;
+
+}
+
+.navbar-container {
+    margin-left: 0px;
+
+}
+
+.navbar-header {
+    text-align: center;
+    width: 16.66666667%;
+
 }
