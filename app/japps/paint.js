@@ -53,7 +53,7 @@ var canvasObj = {
     // Functions we don't want people using that much
     __defaultSettings__: function() {
         // Javascript pseudo constructor replacement
-        this.contextDOM.canvas.width = window.innerWidth;
+        this.contextDOM.canvas.width = window.innerWidth*.75;
         this.contextDOM.canvas.height = window.innerHeight;
 
         this.contextDOM.strokeStyle = "black";

@@ -3,6 +3,11 @@ div > #canvas {
     margin: auto;
 }
 
+#mainCanvas {
+    border-style: solid;
+    cursor:crosshair;
+}
+
 input {
     text-align:center;
 }
@@ -21,3 +26,6 @@ input {
     border-style: solid;
 }
 
+.form-control {
+    min-width: 50px;
+}

@@ -19,8 +19,9 @@
 
         <!-- Application CSS -->
         <link rel="stylesheet" href="css/paint.css" />
+        <link rel="stylesheet" href="css/dashboard.css" />
         <body>
-                <div id="canvas-toolbar" class="container-fluid">
+                <div id="canvas-toolbar" class="container-fluid col-md-3 sidebar">
                         <!--
                         At the current development process, the values are limited through
                         javascript. However, it still shows up to the user as whatever they put in (i.e.
@@ -28,22 +29,22 @@
                         We might need to use AngularJS to fix this later, or use javascript to change the text
                         -->
                         <div class="row">
-                                <span class="toolbar-desc col-md-1">Size:</span>
+                                <span class="toolbar-desc col-md-4">Size:</span>
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm" id="brush-size">
                                                 <span class="input-group-btn" id="canvas-minus">
                                                         <button class="btn btn-default" type="button">-</button>
-						</span>
-                                                <input type="text" class="form-control" id="size" value ="1">
+                                                </span>
+                                                <input type="text" class="form-control" id="size" value ="5">
                                                 <span class="input-group-btn" id="canvas-plus">
                                                         <button class="btn btn-default" type="button">+</button>
-						</span>
+                                                </span>
                                         </span>
                                 </div>
                         </div>
 
                         <div class="row" id="RGBA">
-                                <span class="toolbar-desc col-md-1">RGBA:</span>
+                                <span class="toolbar-desc col-md-4">R:</span>
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="red-minus">
@@ -52,54 +53,67 @@
                                                 <input type="text" class="form-control" id="red" value="0">
                                                 <span class="input-group-btn" id="red-plus">
                                                         <button class="btn btn-default" type="button">+</button>
-						</span>
+                                                </span>
                                         </span>
                                 </div>
-
+                        </div>
+                        <div class ="row">
+                                <span class="toolbar-desc col-md-4">G:</span>
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="green-minus">
                                                         <button class="btn btn-default" type="button">-</button>
-						</span>
+                                                </span>
                                                 <input type="text" class="form-control" id="green" value="0">
                                                 <span class="input-group-btn" id="green-plus">
                                                         <button class="btn btn-default" type="button">+</button>
-						</span>
+                                                </span>
                                         </span>
                                 </div>
-
+                        </div>
+                        <div class="row">
+                                <span class="toolbar-desc col-md-4">B:</span>
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="blue-minus">
                                                         <button class="btn btn-default" type="button">-</button>
-						</span>
+                                                </span>
                                                 <input type="text" class="form-control" id="blue" value="0">
                                                 <span class="input-group-btn" id="blue-plus">
                                                         <button class="btn btn-default" type="button">+</button>
-						</span>
+                                                </span>
                                         </span>
                                 </div>
-
+                        </div>
+                        <div class="row">
+                                <span class="toolbar-desc col-md-4">A:</span>
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="alpha-minus">
                                                         <button class="btn btn-default" type="button">-</button>
-						</span>
+                                                </span>
                                                 <input type="text" class="form-control" id="alpha" value="1">
                                                 <span class="input-group-btn" id="alpha-plus">
                                                         <button class="btn btn-default" type="button">+</button>
-						</span>
+                                                </span>
                                         </span>
                                 </div>
-                                <div class="col-md-2" id="fancy-color-preview" style="background-color:black;">
-                                </div>
                         </div>
-                        <button type="button" id="cls" class="btn btn-default">Clear</button>
-                        <button type="button" id="eraser" class="btn btn-default">Eraser</button>
-                        <button type="button" id="pen" class="btn btn-default">Pen</button>
+                        <div class="row" id="fancy-color-preview" style="background-color:black;">
+                        </div>
+                        <div class="row">
+                                <button type="button" id="cls" class="btn btn-default">Clear</button>
+                        </div>
+                        <div class="row">
+                                <button type="button" id="eraser" class="btn btn-default">Eraser</button>
+                        </div>
+
+                        <div class="row">
+                                <button type="button" id="pen" class="btn btn-default">Pen</button>
+                        </div>
                 </div>
-                <div class="canvas">
-                        <canvas id="mainCanvas" style="border-style:solid; cursor:crosshair"></canvas>
+                <div class="canvas col-md-offset-3">
+                        <canvas id="mainCanvas"></canvas>
                         <br />
                 </div>
 
