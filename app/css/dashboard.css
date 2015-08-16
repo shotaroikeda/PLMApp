@@ -99,7 +99,11 @@
 }
 
 .tool-active {
-    background-color: blue;
+    background-color:#0c4fcb;
+}
+
+.tool-active:hover {
+    background-color:#0c4fcb;
 }
 
 
