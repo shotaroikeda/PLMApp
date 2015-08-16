@@ -29,8 +29,31 @@ input {
     border-style: solid;
 }
 
+.brush-form-input {
+    background-color: #222222;
+    border-style: none;
+    border-color: #121212;
+    color: #cccccc;
+}
+
+.brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
+    background-color: #444444;
+    border-style:none;
+    color: #cccccc;
+    outline: none !important;
+}
+
 .form-control {
     min-width: 50px;
+    background-color: #292929;
+    border-style: none;
+    color: #ffffff;
+}
+
+.btn-default {
+    border-style: none;
+    background-color: #222222;
+    color: #ffffff;
 }
 
 .inputbox {

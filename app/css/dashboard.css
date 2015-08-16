@@ -25,7 +25,8 @@
 
 /* Hide for mobile, show later */
 .sidebar {
-  display: none;
+    display: none;
+    color: #cccccc;
 }
 @media (min-width: 768px) {
   .sidebar {

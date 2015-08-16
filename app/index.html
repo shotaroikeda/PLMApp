@@ -18,8 +18,8 @@
         </head>
 
         <!-- Application CSS -->
-        <link rel="stylesheet" href="css/paint.css" />
         <link rel="stylesheet" href="css/dashboard.css" />
+        <link rel="stylesheet" href="css/paint.css" />
         <body>
 		<!-- Navbar -->
                 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -65,11 +65,11 @@
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm" id="brush-size">
                                                 <span class="input-group-btn" id="size-minus">
-                                                        <button class="btn btn-default" type="button">-</button>
+                                                        <button class="btn brush-form-input" type="button">-</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="size" value ="5">
                                                 <span class="input-group-btn" id="size-plus">
-                                                        <button class="btn btn-default" type="button">+</button>
+                                                        <button class="btn brush-form-input" type="button">+</button>
                                                 </span>
                                         </span>
                                 </div>
@@ -80,11 +80,11 @@
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="red-minus">
-                                                        <button class="btn btn-default" type="button">-</button>
+                                                        <button class="btn brush-form-input" type="button">-</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="red" value="0">
                                                 <span class="input-group-btn" id="red-plus">
-                                                        <button class="btn btn-default" type="button">+</button>
+                                                        <button class="btn brush-form-input" type="button">+</button>
                                                 </span>
                                         </span>
                                 </div>
@@ -94,11 +94,11 @@
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="green-minus">
-                                                        <button class="btn btn-default" type="button">-</button>
+                                                        <button class="btn brush-form-input" type="button">-</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="green" value="0">
                                                 <span class="input-group-btn" id="green-plus">
-                                                        <button class="btn btn-default" type="button">+</button>
+                                                        <button class="btn brush-form-input" type="button">+</button>
                                                 </span>
                                         </span>
                                 </div>
@@ -108,11 +108,11 @@
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="blue-minus">
-                                                        <button class="btn btn-default" type="button">-</button>
+                                                        <button class="btn brush-form-input" type="button">-</button>
                                                 </span>
                                                 <input type="text" class="form-control" id="blue" value="0">
                                                 <span class="input-group-btn" id="blue-plus">
-                                                        <button class="btn btn-default" type="button">+</button>
+                                                        <button class="btn brush-form-input" type="button">+</button>
                                                 </span>
                                         </span>
                                 </div>
@@ -122,11 +122,11 @@
                                 <div class="col-md-2">
                                         <span class="input-group input-group-sm">
                                                 <span class="input-group-btn" id="alpha-minus">
-                                                        <button class="btn btn-default" type="button">-</button>
+                                                        <button class="btn brush-form-input" type="button">-</button>
                                                 </span>
-                                                <input type="text" class="form-control" id="alpha" value="1">
+                                                <input type="text" class="form-control brush-form-input" id="alpha" value="1">
                                                 <span class="input-group-btn" id="alpha-plus">
-                                                        <button class="btn btn-default" type="button">+</button>
+                                                        <button class="btn btn-default brush-form-input" type="button">+</button>
                                                 </span>
                                         </span>
                                 </div>
@@ -134,10 +134,21 @@
                         <div class="row" id="fancy-color-preview" style="background-color:black;">
                         </div>
                         <div class="row">
-                                <button type="button" id="pen" class="btn btn-default">Pen</button>
-                                <button type="button" id="eraser" class="btn btn-default">Eraser</button>
-                                <button type="button" id="cls" class="btn btn-default">Clear</button>
+                                <button type="button" id="pen" class="brush-form-input btn">
+					<img src="images/pen.png">
+				</button>
+                                <button type="button" id="eraser" class="brush-form-input btn">
+					<img src="images/eraser.png">
+				</button>
+                                <button type="button" id="cls" class="brush-form-input btn">
+					<img src="images/clear.png">
+				</button>
                         </div>
+
+			
+			<div style="top:500px;">
+				Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
+			</div>
                 </div>
                 <div class="canvas col-md-offset-2">
                         <canvas id="mainCanvas"></canvas>
@@ -145,7 +156,6 @@
                 </div>
 		</div>
 
-                <div>Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         </body>
 
         <!--custom js goes here...-->
