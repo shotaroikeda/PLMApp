@@ -75,6 +75,7 @@
     font-size: 150%;
 }
 
+
 /* side bar buttons */
 
 .brush-form-input {
@@ -96,6 +97,17 @@
     background-color: #292929;
     border-style: none;
     color: #ffffff;
+}
+
+#fancy-color-preview {
+    width: 35px;
+    height: 35px;
+    border-style: solid;
+    margin-top: 10px;
+}
+
+#toolbar-brushes {
+    margin-top: 10px;
 }
 
 .tool-active {
