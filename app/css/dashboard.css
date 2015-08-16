@@ -75,6 +75,17 @@
     font-size: 150%;
 }
 
+/* sidebar input areas */
+
+input {
+    text-align:center;
+}
+
+.inputbox {
+    padding: 2px;
+
+}
+
 
 /* side bar buttons */
 
