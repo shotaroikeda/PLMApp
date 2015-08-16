@@ -21,7 +21,7 @@ const ALPHA = 3;
 function ColorComponent(id, componentValue, maxval) {
     this.id = id;
     this.componentValue = typeof componentValue !== 'undefined' ? componentValue : 0;
-    this.maxval = typeof maxval !== 'undefined' ? maxval 255;
+    this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
 }
 
 ColorComponent.prototype = {
