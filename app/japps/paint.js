@@ -30,10 +30,9 @@ ColorComponent.prototype = {
 
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
-        val += change;
-        val %= 255;
-        $(id).val(val);
-        componentValue = val;
+        componentValue += change;
+        componentValue %= 255;
+        $(id).val(componentValue);
     },
     //Manual number input
     parseValue: function(val) {
