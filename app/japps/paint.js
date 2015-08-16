@@ -18,7 +18,8 @@ var GREEN = 1;
 var BLUE = 2;
 var ALPHA = 3;
 
-function ColorComponent(id) {
+function ColorComponent(componentValue, id) {
+    this.componentValue = componentValue
     this.id = id;
 }
 
@@ -55,7 +56,7 @@ var canvasObj = {
     //Valid draw modes: pen, eraser, bucket
     currentDrawMode: "pen",
 
-    colorComponents: [new ColorComponent("#red"), new ColorComponent("#green"), new ColorComponent("#blue"), new ColorComponent("#alpha")],
+    colorComponents: [new ColorComponent(0, "#red"), new ColorComponent(0, "#green"), new ColorComponent(0, "#blue"), new ColorComponent(1, "#alpha")],
 
     __previous_coord__: [undefined, undefined],
 
@@ -80,15 +81,21 @@ var canvasObj = {
     },
 
     //Sets the color of the stroke
-    setColor: function() {
-        // Expecting setColor(r, g, b, a);
-        var args = Array.prototype.slice.call(arguments);
+    setColor: function(r, g, b, a) {
+        if (currentDrawMode == "pen") {
 
-        if(args.length != 4) {
-            args.push(1);
+            /*
+            //TODO why is this necessary
+            // Expecting setColor(r, g, b, a);
+            var args = Array.prototype.slice.call(arguments);
+
+            if(args.length != 4) {
+                args.push(1);
+            }
+            */
+
+            this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
         }
-
-        this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
     },
     setSize: function(size) {
         if (isNaN(parseInt(size)) || size < 1 || size > 100)
@@ -251,18 +258,19 @@ $('#size').focusout(function() {
 /* brush icons */
 $('#eraser').click(function() {
     canvasObj.setColor(255, 255, 255, 1);
-    canvasObj.currentDrawMode("eraser");
+    canvasObj.currentDrawMode = "eraser";
 
     $('.tool-active').removeClass('tool-active');
     $('#eraser').addClass('tool-active');
 });
 
 $('#pen').click(function() {
+    //todo this function call is unnecessary
     canvasObj.setColor(canvasObj.colorComponents[RED].componentValue,
                        canvasObj.colorComponents[GREEN].componentValue,
                        canvasObj.colorComponents[BLUE].componentValue,
                        canvasObj.colorComponents[ALPHA].componentValue);
-    canvasObj.currentDrawMode("pen");
+    canvasObj.currentDrawMode = "pen";
 
     $('.tool-active').removeClass('tool-active');
     $('#pen').addClass('tool-active');
