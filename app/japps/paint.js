@@ -13,10 +13,10 @@
 /////////////////////////////////////////////////////////////
 
 //CONSTANTS - use for indexing canvasobj colorcomponents
-var RED = 0;
-var GREEN = 1;
-var BLUE = 2;
-var ALPHA = 3;
+const RED = 0;
+const GREEN = 1;
+const BLUE = 2;
+const ALPHA = 3;
 
 function ColorComponent(componentValue, id) {
     this.componentValue = componentValue
@@ -30,9 +30,9 @@ ColorComponent.prototype = {
 
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
-        componentValue += change;
-        componentValue %= 255;
-        $(id).val(componentValue);
+        this.componentValue += change;
+        this.componentValue %= 255;
+        $(id).val(this.componentValue);
     },
     //Manual number input
     parseValue: function(val) {
@@ -43,7 +43,7 @@ ColorComponent.prototype = {
     },
     //check if update value is necessary
     updateValue: function() {
-        $(id).val(componentValue);
+        $(id).val(this.componentValue);
     }
 };
 
