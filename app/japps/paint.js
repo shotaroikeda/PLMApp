@@ -80,7 +80,7 @@ var canvasObj = {
 
     //Sets the color of the stroke
     setColor: function(r, g, b, a) {
-        if (currentDrawMode == "pen") {
+        if (this.currentDrawMode == "pen") {
 
             /*
             //TODO why is this necessary
@@ -92,7 +92,7 @@ var canvasObj = {
             }
             */
 
-            this.contextDOM.strokeStyle = 'rgba(' + args.join(", ") + ')';
+            this.contextDOM.strokeStyle = 'rgba(' + r + g + b + a + ')';
         }
     },
     setSize: function(size) {
