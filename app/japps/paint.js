@@ -33,6 +33,7 @@ ColorComponent.prototype = {
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
         this.componentValue += change;
+        this.componentValue = Math.round(this.componentValue * 100) / 100;
         if (this.componentValue < 0) this.componentValue = 0
         else if (this.componentValue > this.maxval) this.componentValue = this.maxval;
         this.updateValue();
@@ -42,6 +43,7 @@ ColorComponent.prototype = {
         if (isNaN(parseInt(val)) || val < 0) val = 0;
         else if (val > this.maxval) val = this.maxval;
         this.componentValue = parseInt(val);
+        this.componentValue = Math.round(this.componentValue * 100) / 100;
         this.updateValue();
     },
     //check if update value is necessary
@@ -84,18 +86,7 @@ var canvasObj = {
     //Sets the color of the stroke
     setColor: function(r, g, b, a) {
         if (this.currentDrawMode == "pen") {
-
-            /*
-            //TODO why is this necessary
-            // Expecting setColor(r, g, b, a);
-            var args = Array.prototype.slice.call(arguments);
-
-            if(args.length != 4) {
-                args.push(1);
-            }
-            */
-
-            this.contextDOM.strokeStyle = 'rgba(' + r.toString() + g.toString() + b.toString() + a.toString() + ')';
+            this.contextDOM.strokeStyle = 'rgba(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ',' + a.toString() + ')';
         }
     },
     setSize: function(size) {
