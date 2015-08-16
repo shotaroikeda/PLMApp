@@ -25,7 +25,8 @@ function ColorComponent(componentValue, id) {
 
 ColorComponent.prototype = {
     //stores ID of the class
-    id: "";
+    id: "",
+    componentValue: 0,
 
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
@@ -33,20 +34,18 @@ ColorComponent.prototype = {
         val %= 255;
         $(id).val(val);
         componentValue = val;
-    }
+    },
     //Manual number input
     parseValue: function(val) {
         if (isNaN(parseInt(val)) || val > 255 || val < 0)
             val = 0;
-        $(id).val(val)
+        $(id).val(val);
         componentValue = val;
     },
     //check if update value is necessary
     updateValue: function() {
         $(id).val(componentValue);
-    },
-        componentValue = 0;
-    },
+    }
 };
 
 var canvasObj = {
