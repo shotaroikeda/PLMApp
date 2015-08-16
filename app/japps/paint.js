@@ -19,35 +19,34 @@ const BLUE = 2;
 const ALPHA = 3;
 
 function ColorComponent(id, componentValue, maxval) {
-    this.id = id;
+    this.classid = id;
     this.componentValue = typeof componentValue !== 'undefined' ? componentValue : 0;
     this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
 }
 
 ColorComponent.prototype = {
     //stores ID of the class
-    id: "",
-    maxval: 255
+    classid: "",
+    maxval: 255,
     componentValue: 0,
 
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
         this.componentValue += change;
         if (this.componentValue < 0) this.componentValue = 0
-        else if (this.componentValue > maxval) this.componentValue = maxval;
-        $(this.id).val(this.componentValue);
+        else if (this.componentValue > this.maxval) this.componentValue = this.maxval;
+        this.updateValue();
     },
     //Manual number input
     parseValue: function(val) {
-        console.log(val);
-        if (isNaN(parseInt(val)) || val > 255 || val < 0)
-            val = 0;
-        $(this.id).val(val);
-        componentValue = val;
+        if (isNaN(parseInt(val)) || val < 0) val = 0;
+        else if (val > this.maxval) val = this.maxval;
+        this.componentValue = parseInt(val);
+        this.updateValue();
     },
     //check if update value is necessary
     updateValue: function() {
-        $(this.id).val(this.componentValue);
+        $(this.classid).val(this.componentValue);
     }
 };
 
@@ -96,7 +95,7 @@ var canvasObj = {
             }
             */
 
-            this.contextDOM.strokeStyle = 'rgba(' + r + g + b + a + ')';
+            this.contextDOM.strokeStyle = 'rgba(' + r.toString() + g.toString() + b.toString() + a.toString() + ')';
         }
     },
     setSize: function(size) {
@@ -179,7 +178,7 @@ $('#blue').keyup(function() {
 });
 $('#alpha').keyup(function() {
     var alph = $('#alpha')[0].value;
-    if (alph > 1 || a < 0) a = 1;
+    if (alph > 1 || alph < 0) alph = 1;
     canvasObj.colorComponents[ALPHA].parseValue($('#alpha')[0].value);
     canvasObj.applyRGBA();
 });
