@@ -18,11 +18,6 @@ input {
 /* Toolbar inputs get 100px width per span */
 
 
-#fancy-color-preview {
-    width: 35px;
-    height: 35px;
-    border-style: solid;
-}
 
 .inputbox {
     padding: 2px;
