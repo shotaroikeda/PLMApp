@@ -223,11 +223,21 @@ $('#alpha-plus').click(function(){
 $('#size').keyup(function() {
     canvasObj.setSize($('#size')[0].value);
 });
-
+$('#size-minus').click(function() {
+    console.log('ran');
+    canvasObj.setSize(canvasObj.contextDOM.lineWidth - 1);
+    $('#size').val(canvasObj.contextDOM.lineWidth);
+});
+$('#size-plus').click(function() {
+    canvasObj.setSize(canvasObj.contextDOM.lineWidth + 1);
+    $('#size').val(canvasObj.contextDOM.lineWidth);
+});
+$('#size').focusout(function() {
+    $('#size').val(canvasObj.contextDOM.lineWidth);
+});
 $('#eraser').click(function() {
     canvasObj.setColor(255, 255, 255, 1);
 });
-
 $('#pen').click(function() {
     canvasObj.setColor(canvasObj.RGBA.red,
                        canvasObj.RGBA.green,
