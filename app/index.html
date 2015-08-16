@@ -13,13 +13,15 @@
         <!-- CSS awesomeness -->
         <link rel="stylesheet" href="bootstrap-3.3.5-dist/css/bootstrap.min.css" />
 
+        <!-- Application CSS -->
+        <link rel="stylesheet" href="css/dashboard.css" />
+        <link rel="stylesheet" href="css/paint.css" />
+
         <head>
                 <title>Project Layout Manager Application</title>
         </head>
 
-        <!-- Application CSS -->
-        <link rel="stylesheet" href="css/dashboard.css" />
-        <link rel="stylesheet" href="css/paint.css" />
+
         <body>
                 <!-- Navbar -->
                 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -131,10 +133,10 @@
                                                 </span>
                                         </div>
                                 </div>
-                                <div class="row" id="fancy-color-preview" style="background-color:black;">
+                                <div class="col-md-12" id="fancy-color-preview" style="background-color:black;">
                                 </div>
-                                <div class="row">
-                                        <button type="button" id="pen" class="brush-form-input btn">
+                                <div class="row col-md-12">
+                                        <button type="button" id="pen" class="brush-form-input btn tool-active">
                                                 <img src="images/pen.png">
                                         </button>
                                         <button type="button" id="eraser" class="brush-form-input btn">
@@ -145,8 +147,7 @@
                                         </button>
                                 </div>
 
-
-                                <div style="top:500px;">
+                                <div id="credits">
                                         Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
                                 </div>
                         </div>
@@ -154,7 +155,7 @@
                                 <canvas id="mainCanvas"></canvas>
                         </div>
                 </div>
-
+		<div class="tool-active">sample text</div>
         </body>
 
         <!--custom js goes here...-->

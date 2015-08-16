@@ -29,6 +29,7 @@ input {
     border-style: solid;
 }
 
+/*
 .brush-form-input {
     background-color: #222222;
     border-style: none;
@@ -43,18 +44,15 @@ input {
     outline: none !important;
 }
 
-.form-control {
-    min-width: 50px;
-    background-color: #292929;
-    border-style: none;
-    color: #ffffff;
-}
+*/
 
+/*
 .btn-default {
     border-style: none;
     background-color: #222222;
     color: #ffffff;
 }
+*/
 
 .inputbox {
     padding: 2px;
@@ -69,5 +67,4 @@ input {
 .navbar-header {
     text-align: center;
     width: 16.66666667%;
-
 }

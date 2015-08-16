@@ -235,14 +235,23 @@ $('#size-plus').click(function() {
 $('#size').focusout(function() {
     $('#size').val(canvasObj.contextDOM.lineWidth);
 });
+
+/* brush icons */
 $('#eraser').click(function() {
     canvasObj.setColor(255, 255, 255, 1);
+
+    $('.tool-active').removeClass('tool-active');
+    $('#eraser').addClass('tool-active');
 });
+
 $('#pen').click(function() {
     canvasObj.setColor(canvasObj.RGBA.red,
                        canvasObj.RGBA.green,
                        canvasObj.RGBA.blue,
                        canvasObj.RGBA.alpha);
+
+    $('.tool-active').removeClass('tool-active');
+    $('#pen').addClass('tool-active');
 });
 
 // startup functions
