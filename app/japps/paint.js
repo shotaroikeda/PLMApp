@@ -18,24 +18,28 @@ const GREEN = 1;
 const BLUE = 2;
 const ALPHA = 3;
 
-function ColorComponent(componentValue, id) {
-    this.componentValue = componentValue
+function ColorComponent(id, componentValue, maxval) {
     this.id = id;
+    this.componentValue = typeof componentValue !== 'undefined' ? componentValue : 0;
+    this.maxval = typeof maxval !== 'undefined' ? maxval 255;
 }
 
 ColorComponent.prototype = {
     //stores ID of the class
     id: "",
+    maxval: 255
     componentValue: 0,
 
     //Changes component value by a +1 or -1
     changeComponentValue: function(change) {
         this.componentValue += change;
-        this.componentValue %= 255;
+        if (this.componentValue < 0) this.componentValue = 0
+        else if (this.componentValue > maxval) this.componentValue = maxval;
         $(this.id).val(this.componentValue);
     },
     //Manual number input
     parseValue: function(val) {
+        console.log(val);
         if (isNaN(parseInt(val)) || val > 255 || val < 0)
             val = 0;
         $(this.id).val(val);
@@ -54,7 +58,7 @@ var canvasObj = {
     //Valid draw modes: pen, eraser, bucket
     currentDrawMode: "pen",
 
-    colorComponents: [new ColorComponent(0, "#red"), new ColorComponent(0, "#green"), new ColorComponent(0, "#blue"), new ColorComponent(1, "#alpha")],
+    colorComponents: [new ColorComponent("#red"), new ColorComponent("#green"), new ColorComponent("#blue"), new ColorComponent("#alpha", 1, 1)],
 
     __previous_coord__: [undefined, undefined],
 
@@ -221,17 +225,23 @@ $('#blue-plus').click(function() {
 // Can't do val-=0.1 because of float rouding errors
 //TODO look into why this isnt calling the method
 $('#alpha-minus').click(function(){
-    if (canvasObj.RGBA.alpha > 0) {
+    /*
+    if (canvasObj.colorComponents[ALPHA].componentValue > 0) {
 	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 - 10)/100;
-	   $('#alpha').val(canvasObj.RGBA.alpha);
+	   $('#alpha').val(canvasObj.colorComponents[ALPHA].componentValue);
     }
+    */
+    canvasObj.colorComponents[ALPHA].changeComponentValue(-0.1);
     canvasObj.applyRGBA();
 });
 $('#alpha-plus').click(function(){
-    if (canvasObj.RGBA.alpha < 1) {
+    /*
+    if (canvasObj.colorComponents[ALPHA].componentValue < 1) {
 	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 + 10)/100;
-	   $('#alpha').val(canvasObj.RGBA.alpha);
+	   $('#alpha').val(canvasObj.colorComponents[ALPHA].componentValue);
     }
+    */
+    canvasObj.colorComponents[ALPHA].changeComponentValue(0.1);
     canvasObj.applyRGBA();
 });
 // End color change actions
