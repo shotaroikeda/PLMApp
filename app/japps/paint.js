@@ -40,9 +40,9 @@ ColorComponent.prototype = {
     },
     //Manual number input
     parseValue: function(val) {
-        if (isNaN(parseInt(val)) || val < 0) val = 0;
+        if (isNaN(parseFloat(val)) || val < 0) val = 0;
         else if (val > this.maxval) val = this.maxval;
-        this.componentValue = parseInt(val);
+        this.componentValue = parseFloat(val);
         this.componentValue = Math.round(this.componentValue * 100) / 100;
         this.updateValue();
     },
@@ -151,42 +151,28 @@ $('#cls').click(function () {
     canvasObj.clearCanvas();
 });
 
-/* Color change listener */
-/*** Note: I'm not sure if this can be cleaned up or put into the canvasObj
-     instead of being "global" functions ***/
-// Manual value input
-$('#red').keyup(function() {
+//When the text box goes out of focus, the value inside of it updates
+$('#red').focusout(function() {
     canvasObj.colorComponents[RED].parseValue($('#red')[0].value);
+    canvasObj.colorComponents[RED].updateValue();
     canvasObj.applyRGBA();
 });
-$('#green').keyup(function() {
+$('#green').focusout(function() { 
     canvasObj.colorComponents[GREEN].parseValue($('#green')[0].value);
+    canvasObj.colorComponents[GREEN].updateValue();
     canvasObj.applyRGBA();
 });
-$('#blue').keyup(function() {
+$('#blue').focusout(function() {
     canvasObj.colorComponents[BLUE].parseValue($('#blue')[0].value);
+    canvasObj.colorComponents[BLUE].updateValue();
     canvasObj.applyRGBA();
 });
-$('#alpha').keyup(function() {
-    var alph = $('#alpha')[0].value;
-    if (alph > 1 || alph < 0) alph = 1;
+$('#alpha').focusout(function() {
     canvasObj.colorComponents[ALPHA].parseValue($('#alpha')[0].value);
+    canvasObj.colorComponents[ALPHA].updateValue();
     canvasObj.applyRGBA();
 });
 
-//TODO check if these are necessary
-$('#red').focusout(function() {
-    canvasObj.colorComponents[RED].updateValue();
-});
-$('#green').focusout(function() { 
-    canvasObj.colorComponents[GREEN].updateValue();
-});
-$('#blue').focusout(function() {
-    canvasObj.colorComponents[BLUE].updateValue();
-});
-$('#alpha').focusout(function() {
-    canvasObj.colorComponents[ALPHA].updateValue();
-});
 // Click + or - actions
 $('#red-minus').click(function() {
     canvasObj.colorComponents[RED].changeComponentValue(-1);
@@ -212,25 +198,11 @@ $('#blue-plus').click(function() {
     canvasObj.colorComponents[BLUE].changeComponentValue(1);
     canvasObj.applyRGBA();
 });
-// Can't do val-=0.1 because of float rouding errors
-//TODO look into why this isnt calling the method
 $('#alpha-minus').click(function(){
-    /*
-    if (canvasObj.colorComponents[ALPHA].componentValue > 0) {
-	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 - 10)/100;
-	   $('#alpha').val(canvasObj.colorComponents[ALPHA].componentValue);
-    }
-    */
     canvasObj.colorComponents[ALPHA].changeComponentValue(-0.1);
     canvasObj.applyRGBA();
 });
 $('#alpha-plus').click(function(){
-    /*
-    if (canvasObj.colorComponents[ALPHA].componentValue < 1) {
-	   canvasObj.colorComponents[ALPHA].componentValue = (parseFloat(canvasObj.RGBA.alpha)*100 + 10)/100;
-	   $('#alpha').val(canvasObj.colorComponents[ALPHA].componentValue);
-    }
-    */
     canvasObj.colorComponents[ALPHA].changeComponentValue(0.1);
     canvasObj.applyRGBA();
 });
