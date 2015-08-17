@@ -486,9 +486,6 @@ function calc_error(accepted, measured) {
     return (accepted - measured) / accepted;
 }
 
-
-
-
 // startup functions
 $(document).ready(function () {
     canvasObj.__constructor__();
