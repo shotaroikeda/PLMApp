@@ -32,9 +32,9 @@ function Point(x, y) {
 
 Point.prototype = {
     setPoint: function(x, y) {
-	this.x = x;
-	this.y = y;
-	this.point = [x,y];
+        this.x = x;
+        this.y = y;
+        this.point = [x,y];
     }
 };
 
@@ -46,17 +46,17 @@ function Shape(dom) {
 
 Shape.prototype = {
     draw: function() {
-	if (this.points.length === 0) return;
-	this.dom.beginPath();
-	this.dom.moveTo(this.points[0].x, this.points[0].y);
-	for (var i = 1; i < this.points.length; ++i) {
-	    this.dom.lineTo(this.points[i].x, this.points[i].y);
-	}
-	this.dom.closePath();
-	this.dom.stroke();
+        if (this.points.length === 0) return;
+        this.dom.beginPath();
+        this.dom.moveTo(this.points[0].x, this.points[0].y);
+        for (var i = 1; i < this.points.length; ++i) {
+            this.dom.lineTo(this.points[i].x, this.points[i].y);
+        }
+        this.dom.closePath();
+        this.dom.stroke();
     },
     addPoint: function(x,y) {
-	this.points.push(new Point(x,y));
+        this.points.push(new Point(x,y));
     }
 };
 
@@ -128,45 +128,45 @@ var canvasObj = {
     /* Setup functions
      * all member variables are in the constructor
      */
-    
+
     // NOTE: I can't seem to get function CanvasObj() and CanvasObj.prototype to work well
     // This is the best substitute I have so far.
     __constructor__: function() {
-	/* Object Varibles */
-	this.contextDOM =  $('#mainCanvas')[0].getContext("2d");
-	// Window: width is .85 because of column, height - 50 for navbar
-	this.contextDOM.canvas.width = window.innerWidth*.85;
-	this.contextDOM.canvas.height = window.innerHeight - 50;
-	
-	// TODO: different lineJoin for different tools
-	this.contextDOM.strokeStyle = "black";
-	this.contextDOM.lineJoin = "round";
-	this.contextDOM.lineWidth = 5;
+        /* Object Varibles */
+        this.contextDOM =  $('#mainCanvas')[0].getContext("2d");
+        // Window: width is .85 because of column, height - 50 for navbar
+        this.contextDOM.canvas.width = window.innerWidth*.85;
+        this.contextDOM.canvas.height = window.innerHeight - 50;
 
-	this.currentDrawMode = PEN;
-	this.penDown = false,
-	this.__previous_coord__ = [undefined, undefined],
-	this.colorComponents = [
+        // TODO: different lineJoin for different tools
+        this.contextDOM.strokeStyle = "black";
+        this.contextDOM.lineJoin = "round";
+        this.contextDOM.lineWidth = 5;
+
+        this.currentDrawMode = PEN;
+        this.penDown = false,
+        this.__previous_coord__ = [undefined, undefined],
+        this.colorComponents = [
             new ColorComponent("#red"),
             new ColorComponent("#green"),
             new ColorComponent("#blue"),
             new ColorComponent("#alpha", 1, 1, 0.1)
-	];
+        ];
 
-	// Holds all shapes for undo and redo
-	this.shapeStack = [];
-	
-	// Initialize event listeners
-	this.__initEvents__();
+        // Holds all shapes for undo and redo
+        this.shapeStack = [];
+
+        // Initialize event listeners
+        this.__initEvents__();
     },
-    
+
     __initEvents__: function() {
-	_addColorEvents(RED);
-	_addColorEvents(GREEN);
-	_addColorEvents(BLUE);
-	_addColorEvents(ALPHA);
-	_addMouseEvents();
-	_addButtonEvents();
+        _addColorEvents(RED);
+        _addColorEvents(GREEN);
+        _addColorEvents(BLUE);
+        _addColorEvents(ALPHA);
+        _addMouseEvents();
+        _addButtonEvents();
     },
 
     /* Public member functions */
@@ -211,16 +211,16 @@ var canvasObj = {
         this.contextDOM.stroke();
     },
     /*
-    draw2: function(x, y, drag) {
-	if (drag) {
+      draw2: function(x, y, drag) {
+      if (drag) {
 
 
-	} else {
-	    canvasObj.shapes.push(new ShapeLine(canvasObj.contextDOM))
-	}
+      } else {
+      canvasObj.shapes.push(new ShapeLine(canvasObj.contextDOM))
+      }
 
 
-    },*/
+      },*/
 
 };
 
@@ -249,8 +249,18 @@ function _addColorEvents(color) {
     });
 };
 
+function arrayColorCompare(arr1, arr2) {
+    for (var i=0;i < arr1.length;i++) {
+        if (arr1[i] != arr2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function _addMouseEvents() {
-    
+
     $('canvas').mousedown(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
@@ -258,21 +268,62 @@ function _addMouseEvents() {
             canvasObj.penDown = true;
             canvasObj.draw(mouseX, mouseY, false);
         } else if (canvasObj.currentDrawMode == "bucket") {
+	    /* WARNING:
+	       Currently uses pixel by pixel filling which is apparently slower vs filling in a
+	       rectangle of a larger area.
+
+	       There is definitely room for opimization here.
+	       */
             queue = [];
             queue.push([mouseX, mouseY]);
+            pointer_pixel_data = canvasObj.contextDOM.getImageData(mouseX, mouseY, 1, 1);
+            fill_color = [parseInt($('#red')[0].value), parseInt($('#green')[0].value),
+                          parseInt($('#blue')[0].value), parseInt($('#alpha')[0].value)];
 
             while (queue.length > 0) {
                 current_point = queue.shift();
+                current_pixel_data = canvasObj.contextDOM.
+		    getImageData(current_point[0], current_point[1], 1, 1);
+
+                if (arrayColorCompare(current_pixel_data.data, pointer_pixel_data.data)) {
+		    // Add ajacent pixels to queue, check later
+		    curr_x = current_point[0];
+		    curr_y = current_point[1];
+		    if (canvasObj.contextDOM.canvas.width >= (curr_x+1)) {
+			queue.push([curr_x+1, curr_y]);
+		    }
+
+		    if (canvasObj.contextDOM.canvas.height >= (curr_y+1)) {
+			queue.push([curr_x, curr_y+1]);
+		    }
+
+		    if ((curr_x-1) >= 0) {
+			queue.push([curr_x-1, curr_y]);
+		    }
+
+		    if ((curr_y-1) >= 0) {
+			queue.push([curr_x, curr_y-1]);
+		    }
+
+		    current_pixel_data.data[RED] = fill_color[RED];
+		    current_pixel_data.data[GREEN] = fill_color[GREEN];
+		    current_pixel_data.data[BLUE] = fill_color[BLUE];
+		    current_pixel_data.data[ALPHA] = fill_color[ALPHA];
+
+		    canvasObj.contextDOM.putImageData(current_pixel_data, curr_x, curr_y);
+		    
+                }
                 //TODO finish me
+		// right now it's so inefficent it crashes
             }
         }
     });
 
     $('canvas').mousemove(function(e) {
-	var mouseX = e.pageX - this.offsetLeft;
+        var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
         if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") &&
-	    canvasObj.penDown) {
+           canvasObj.penDown) {
             canvasObj.draw(mouseX, mouseY, true);
         }
     });
