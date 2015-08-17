@@ -94,6 +94,7 @@ input {
         border-style: none;
         border-color: #121212;
         color: #cccccc;
+        margin-right: 4px;
 }
 
 .brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
