@@ -18,25 +18,71 @@ const GREEN = 1;
 const BLUE = 2;
 const ALPHA = 3;
 
+//Valid draw modes: pen, eraser, bucket
+const PEN = "pen";
+const ERASER = "eraser";
+const BUCKET = "bucket";
+
+// Point opject
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+    this.point = [x,y];
+};
+
+Point.prototype = {
+    setPoint: function(x, y) {
+	this.x = x;
+	this.y = y;
+	this.point = [x,y];
+    }
+};
+
+// Shape base class
+function Shape(dom) {
+    this.points = [];
+    this.dom = dom;
+};
+
+Shape.prototype = {
+    draw: function() {
+	if (this.points.length === 0) return;
+	this.dom.beginPath();
+	this.dom.moveTo(this.points[0].x, this.points[0].y);
+	for (var i = 1; i < this.points.length; ++i) {
+	    this.dom.lineTo(this.points[i].x, this.points[i].y);
+	}
+	this.dom.closePath();
+	this.dom.stroke();
+    },
+    addPoint: function(x,y) {
+	this.points.push(new Point(x,y));
+    }
+};
+
+// Line class: inherits from Shape
+function ShapeLine(dom) {
+    Shape.call(this);
+};
+
+// Regular Polygon class: inherits from Shape
+function ShapeRegularPolygon(dom) {
+    Shape.call(this);
+};
+
+// Color Component class
 function ColorComponent(id, componentValue, maxval, delta) {
+    // stores ID of the class
     this.classId = id;
+    this.plusId = this.classId+'-'+'plus';
+    this.minusId = this.classId+'-'+'minus';
+
     this.componentValue = typeof componentValue !== 'undefined' ? componentValue : 0;
     this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
     this.delta = typeof delta !== 'undefined' ? delta : 1;
-    this.plusId = this.classId+'-'+'plus';
-    this.minusId = this.classId+'-'+'minus';
-}
+};
 
 ColorComponent.prototype = {
-    // stores ID of the class
-    classId: "",
-    plusId: "",
-    minusId: "",
-    maxval: 255,
-    componentValue: 0,
-    delta: 1,
-
-
     // Changes component value by a +1 or -1
     changeValue: function(change) {
         this.componentValue = Math.round((this.componentValue+change)*100)/100;
@@ -53,68 +99,77 @@ ColorComponent.prototype = {
         else if (val > this.maxval) val = this.maxval;
         this.componentValue = Math.round(val*100)/100;
     },
-    // check if update value is necessary
+    // Check if update value is necessary
     updateHTML: function() {
         $(this.classId).val(this.componentValue);
     },
 
-    // Event listener functions
+    /* Event listener functions */
+    // Increment value; + button
     buttonPlus: function() {
-        console.log("delta"+this.delta);
         this.changeValue(this.delta);
     },
+    // Decrement value; - button
     buttonMinus: function() {
         this.changeValue(-this.delta);
     },
+    // Unfocus on input box to apply change; updates HTML
     inputFocusout: function() {
         this.parseValue($(this.classId)[0].value);
         this.updateHTML();
     },
+    // Key input in input box to apply change; does NOT update HTML
     inputKeyup: function() {
         this.parseValue($(this.classId)[0].value);
     },
-
-
 };
 
 var canvasObj = {
-    // object variables
-    contextDOM: $('#mainCanvas')[0].getContext("2d"),
-    penDown: false,
-    //Valid draw modes: pen, eraser, bucket
-    currentDrawMode: "pen",
+    /* Setup functions
+     * all member variables are in the constructor
+     */
+    
+    // NOTE: I can't seem to get function CanvasObj() and CanvasObj.prototype to work well
+    // This is the best substitute I have so far.
+    __constructor__: function() {
+	/* Object Varibles */
+	this.contextDOM =  $('#mainCanvas')[0].getContext("2d");
+	// Window: width is .85 because of column, height - 50 for navbar
+	this.contextDOM.canvas.width = window.innerWidth*.85;
+	this.contextDOM.canvas.height = window.innerHeight - 50;
+	
+	// TODO: different lineJoin for different tools
+	this.contextDOM.strokeStyle = "black";
+	this.contextDOM.lineJoin = "round";
+	this.contextDOM.lineWidth = 5;
 
-    colorComponents: [
-        new ColorComponent("#red"),
-        new ColorComponent("#green"),
-        new ColorComponent("#blue"),
-        new ColorComponent("#alpha", 1, 1, 0.1)],
+	this.currentDrawMode = PEN;
+	this.penDown = false,
+	this.__previous_coord__ = [undefined, undefined],
+	this.colorComponents = [
+            new ColorComponent("#red"),
+            new ColorComponent("#green"),
+            new ColorComponent("#blue"),
+            new ColorComponent("#alpha", 1, 1, 0.1)
+	];
 
-    __previous_coord__: [undefined, undefined],
-
-    // Functions we don't want people using that much
-    __defaultSettings__: function() {
-        // Javascript pseudo constructor replacement
-        this.contextDOM.canvas.width = window.innerWidth*.85;
-        this.contextDOM.canvas.height = window.innerHeight - 50;
-
-        this.contextDOM.strokeStyle = "black";
-        this.contextDOM.lineJoin = "round";
-        this.contextDOM.lineWidth = 5;
-
-        this.__initEvents__();
+	// Holds all shapes for undo and redo
+	this.shapeStack = [];
+	
+	// Initialize event listeners
+	this.__initEvents__();
     },
-
+    
     __initEvents__: function() {
-        _addColorEvents(RED);
-        _addColorEvents(GREEN);
-        _addColorEvents(BLUE);
-        _addColorEvents(ALPHA);
+	_addColorEvents(RED);
+	_addColorEvents(GREEN);
+	_addColorEvents(BLUE);
+	_addColorEvents(ALPHA);
 	_addMouseEvents();
 	_addButtonEvents();
     },
 
-
+    /* Public member functions */
     //Sets the color of the preview box to the currently selected RGBA value
     applyRGBA: function() {
         this.setColor(this.colorComponents[RED].componentValue,
@@ -155,13 +210,23 @@ var canvasObj = {
         this.contextDOM.closePath();
         this.contextDOM.stroke();
     },
+    /*
+    draw2: function(x, y, drag) {
+	if (drag) {
+
+
+	} else {
+	    canvasObj.shapes.push(new ShapeLine(canvasObj.contextDOM))
+	}
+
+
+    },*/
 
 };
 
 function _addColorEvents(color) {
     // pass by constant ex: RED, GREEN, BLUE, ALPHA
     var component = canvasObj.colorComponents[color];
-
     // Click + or - buttons
     $(component.minusId).on('click', function(){
         component.buttonMinus();
@@ -185,7 +250,7 @@ function _addColorEvents(color) {
 };
 
 function _addMouseEvents() {
-
+    
     $('canvas').mousedown(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
@@ -198,14 +263,17 @@ function _addMouseEvents() {
 
             while (queue.length > 0) {
                 current_point = queue.shift();
-                //TODO finish me 
+                //TODO finish me
             }
         }
     });
 
     $('canvas').mousemove(function(e) {
-        if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") && canvasObj.penDown) {
-            canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+	var mouseX = e.pageX - this.offsetLeft;
+        var mouseY = e.pageY - this.offsetTop;
+        if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") &&
+	    canvasObj.penDown) {
+            canvasObj.draw(mouseX, mouseY, true);
         }
     });
 
@@ -234,7 +302,6 @@ function _addButtonEvents() {
         canvasObj.setSize($('#size')[0].value);
     });
     $('#size-minus').click(function() {
-        console.log('ran');
         canvasObj.setSize(canvasObj.contextDOM.lineWidth - 1);
         $('#size').val(canvasObj.contextDOM.lineWidth);
     });
@@ -280,10 +347,6 @@ function _addButtonEvents() {
     });
 };
 
-canvasObj.__defaultSettings__();
-// startup functions
-$(document).ready(function () {
-});
 
 //Convert colorspace RGB to XYZ
 function rgb_to_xyz(rgb) {
@@ -317,7 +380,7 @@ function xyz_to_lab(xyz) {
         }
     }
 
-    l = (116 * xyz[1]) - 16; 
+    l = (116 * xyz[1]) - 16;
     a = 500 * (xyz[0] - xyz[1]);
     b = 200 * (xyz[1] - xyz[2]);
 
@@ -337,4 +400,11 @@ function deltae(lab1, lab2) {
 function calc_error(accepted, measured) {
     return (accepted - measured) / accepted;
 }
-    
+
+
+
+
+// startup functions
+$(document).ready(function () {
+    canvasObj.__constructor__();
+});

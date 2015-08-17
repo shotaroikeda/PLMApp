@@ -31,8 +31,8 @@
 
 /* Hide for mobile, show later */
 .sidebar {
-        display: none;
-        color: #cccccc;
+    display: none;
+    color: #cccccc;
 }
 
 @media (min-width: 768px) {
@@ -70,19 +70,19 @@
 
 /* side bar text */
 .toolbar-desc {
-        color: #bebebe;
-        font-weight: 900;
-        font-size: 150%;
+    color: #bebebe;
+    font-weight: 900;
+    font-size: 150%;
 }
 
 /* sidebar input areas */
 
 input {
-        text-align:center;
+    text-align:center;
 }
 
 .inputbox {
-        padding: 2px;
+    padding: 2px;
 
 }
 
@@ -90,53 +90,54 @@ input {
 /* side bar buttons */
 
 .brush-form-input {
-        background-color: #222222;
-        border-style: none;
-        border-color: #121212;
-        color: #cccccc;
-        margin-right: 4px;
+    background-color: #222222;
+    border-style: none;
+    border-color: #121212;
+    color: #cccccc;
+    margin-right: 0px;
 }
 
 .brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
-        background-color: #444444;
-        border-style:none;
-        color: #cccccc;
-        outline: none !important;
+    background-color: #444444;
+    border-style:none;
+    color: #cccccc;
+    outline: none !important;
 }
 
 .form-control {
-        min-width: 50px;
-        background-color: #292929;
-        border-style: none;
-        color: #ffffff;
+    max-width: 50px;
+    min-width: 50px;
+    background-color: #292929;
+    border-style: none;
+    color: #ffffff;
 }
 
 #fancy-color-preview {
-        width: 35px;
-        height: 35px;
-        border-style: solid;
-        margin-top: 10px;
+    width: 35px;
+    height: 35px;
+    border-style: solid;
+    margin-top: 10px;
 }
 
 #toolbar-brushes {
-        margin-top: 10px;
+    margin-top: 10px;
 }
 
 .tool-active {
-        background-color:#0c4fcb;
+    background-color:#0c4fcb;
 }
 
 .tool-active:hover {
-        background-color:#0c4fcb;
+    background-color:#0c4fcb;
 }
 
 
 /* side bar Credit formatting */
 #credits {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
 }
 
 /*
