@@ -245,6 +245,22 @@ $('#pen').click(function() {
     $('.tool-active').removeClass('tool-active');
     $('#pen').addClass('tool-active');
 });
+$('#bucket').click(function() {
+    canvasObj.setColor(canvasObj.colorComponents[RED].componentValue,
+                       canvasObj.colorComponents[GREEN].componentValue,
+                       canvasObj.colorComponents[BLUE].componentValue,
+                       canvasObj.colorComponents[ALPHA].componentValue);
+    canvasObj.currentDrawMode = "bucket";
+
+    $('.tool-active').removeClass('tool-active');
+    $('#bucket').addClass('tool-active');
+});
+$('#undo').click(function() {
+    //TODO implement me
+});
+$('#redo').click(function() {
+    //TODO implement me
+});
 
 // startup functions
 $(document).ready(function () {
