@@ -43,7 +43,9 @@ function Drawable(dom) {
 };
 
 Drawable.prototype = {
-    addPoint: function(x,y)
+    addPoint: function(x,y) {
+
+    }
 
 };
 
