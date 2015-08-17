@@ -126,7 +126,7 @@ var canvasObj = {
 
     //Sets the color of the stroke
     setColor: function(r, g, b, a) {
-        this.contextDOM.strokeStyle = 'rgba('+r+','+g+','+b+','+a+')';
+        this.contextDOM.strokeStyle = 'rgba(' + [r, g, b, a].join(',') + ')';
     },
     setSize: function(size) {
         if (isNaN(parseInt(size)) || size < 1 || size > 100)
@@ -147,7 +147,7 @@ var canvasObj = {
             var prevY = this.__previous_coord__[1];
             this.contextDOM.moveTo(prevX, prevY);
         } else {
-            this.contextDOM.moveTo(x-1, y);
+            this.contextDOM.moveTo(x - 1, y);
         }
         this.__previous_coord__ = [x, y];
 
@@ -173,12 +173,12 @@ function _addColorEvents(color) {
     });
 
     // When text box goes out of focus, the value inside updates
-    $(component.classId).on('focusout', function(){
+    $(component.classId).on('focusout', function() {
         component.inputFocusout();
         canvasObj.applyRGBA();
     });
     // When keyup occurs, the value updates only in the script, not HTML
-    $(component.classId).on('keyup', function(){
+    $(component.classId).on('keyup', function() {
         component.inputKeyup();
         canvasObj.applyRGBA();
     });
@@ -193,7 +193,13 @@ function _addMouseEvents() {
             canvasObj.penDown = true;
             canvasObj.draw(mouseX, mouseY, false);
         } else if (canvasObj.currentDrawMode == "bucket") {
+            queue = [];
+            queue.push([mouseX, mouseY]);
 
+            while (queue.length > 0) {
+                current_point = queue.shift();
+                //TODO finish me 
+            }
         }
     });
 
@@ -244,7 +250,7 @@ function _addButtonEvents() {
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
         canvasObj.currentDrawMode = "eraser";
-        
+
         $('.tool-active').removeClass('tool-active');
         $('#eraser').addClass('tool-active');
     });
@@ -331,3 +337,4 @@ function deltae(lab1, lab2) {
 function calc_error(accepted, measured) {
     return (accepted - measured) / accepted;
 }
+    
