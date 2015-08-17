@@ -7,8 +7,8 @@
  */
 
 .sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 /*
@@ -16,73 +16,73 @@
  * Hide default border to remove 1px line.
  */
 .navbar-fixed-top {
-  border: 0;
+    border: 0;
 }
 
 /********************************************************************************/
-/* Sidebar:								        */
+/* Sidebar:                                     */
 /* Please keep the organizational hiearchy here. CSS is loaded in a LIFO state, */
-/* which means that the latest CSS will be the one that overrides all.	        */
-/* This can lead to problems such as making CSS changes very difficult.	        */
+/* which means that the latest CSS will be the one that overrides all.          */
+/* This can lead to problems such as making CSS changes very difficult.         */
 /* ex. Don't set background color of the navbar in paint.css. Change it here!   */
 /* This would cause problems like future navbar elements will all have the same */
-/* background color.							        */
+/* background color.                                    */
 /********************************************************************************/
 
 /* Hide for mobile, show later */
 .sidebar {
-    display: none;
-    color: #cccccc;
+        display: none;
+        color: #cccccc;
 }
 
 @media (min-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 50px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #333;
-    border-right: 1px solid #eee;
-  }
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #333;
+        border-right: 1px solid #eee;
+    }
 }
 
 /* Sidebar navigation */
 .nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
 }
 .nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
 }
 .nav-sidebar > .active > a,
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus {
-  color: #fff;
-  background-color: #428bca;
+    color: #fff;
+    background-color: #428bca;
 }
 
 /* side bar text */
 .toolbar-desc {
-    color: #bebebe;
-    font-weight: 900;
-    font-size: 150%;
+        color: #bebebe;
+        font-weight: 900;
+        font-size: 150%;
 }
 
 /* sidebar input areas */
 
 input {
-    text-align:center;
+        text-align:center;
 }
 
 .inputbox {
-    padding: 2px;
+        padding: 2px;
 
 }
 
@@ -90,52 +90,53 @@ input {
 /* side bar buttons */
 
 .brush-form-input {
-    background-color: #222222;
-    border-style: none;
-    border-color: #121212;
-    color: #cccccc;
+        background-color: #222222;
+        border-style: none;
+        border-color: #121212;
+        color: #cccccc;
+        margin-right: 4px;
 }
 
 .brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
-    background-color: #444444;
-    border-style:none;
-    color: #cccccc;
-    outline: none !important;
+        background-color: #444444;
+        border-style:none;
+        color: #cccccc;
+        outline: none !important;
 }
 
 .form-control {
-    min-width: 50px;
-    background-color: #292929;
-    border-style: none;
-    color: #ffffff;
+        min-width: 50px;
+        background-color: #292929;
+        border-style: none;
+        color: #ffffff;
 }
 
 #fancy-color-preview {
-    width: 35px;
-    height: 35px;
-    border-style: solid;
-    margin-top: 10px;
+        width: 35px;
+        height: 35px;
+        border-style: solid;
+        margin-top: 10px;
 }
 
 #toolbar-brushes {
-    margin-top: 10px;
+        margin-top: 10px;
 }
 
 .tool-active {
-    background-color:#0c4fcb;
+        background-color:#0c4fcb;
 }
 
 .tool-active:hover {
-    background-color:#0c4fcb;
+        background-color:#0c4fcb;
 }
 
 
 /* side bar Credit formatting */
 #credits {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
 }
 
 /*
@@ -143,18 +144,22 @@ input {
  */
 
 .main {
-  padding: 20px;
+    padding: 20px;
 }
 
 @media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
+    .main {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
 }
 
 .main .page-header {
-  margin-top: 0;
+    margin-top: 0px;
+}
+
+.icon-row {
+    margin-top: 5px;
 }
 
 
@@ -164,17 +169,17 @@ input {
 
 /*
 .placeholders {
-  margin-bottom: 30px;
-  text-align: center;
+    margin-bottom: 30px;
+    text-align: center;
 }
 .placeholders h4 {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 .placeholder {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .placeholder img {
-  display: inline-block;
-  border-radius: 50%;
+    display: inline-block;
+    border-radius: 50%;
 }
 */

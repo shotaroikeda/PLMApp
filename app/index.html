@@ -1,164 +1,177 @@
 <!DOCTYPE html>
 
 <html>
-        <!--load js plugins on start-->
-        <script src="jquery-2.1.4.min.js" /></script>
-        <script src="angular-1.4.3/angular.min.js"></script>
-        <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-        <script src="jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+    <!--load js plugins on start-->
+    <script src="jquery-2.1.4.min.js" /></script>
+    <script src="angular-1.4.3/angular.min.js"></script>
+    <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
 
-        <!-- make JQuery-UI work -->
-        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
+    <!-- make JQuery-UI work -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
 
-        <!-- CSS awesomeness -->
-        <link rel="stylesheet" href="bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+    <!-- CSS awesomeness -->
+    <link rel="stylesheet" href="bootstrap-3.3.5-dist/css/bootstrap.min.css" />
 
-        <!-- Application CSS -->
-        <link rel="stylesheet" href="css/dashboard.css" />
-        <link rel="stylesheet" href="css/paint.css" />
+    <!-- Application CSS -->
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/paint.css" />
 
-        <head>
-                <title>Project Layout Manager Application</title>
-        </head>
-
-
-        <body>
-                <!-- Navbar -->
-                <nav class="navbar navbar-inverse navbar-fixed-top">
-                        <div class="navbar-container">
-                                <div class="navbar-header">
-                                        <a class="navbar-brand" id="selection" href="#">Canvas</a>
-                                </div>
-                                <div id="navbar" class="navbar-collapse collapse">
-                                        <ul class="nav navbar-nav">
-                                                <li class="active"><a href="#">Home</a></li>
-                                                <li><a href="#about">About</a></li>
-                                                <li><a href="#contact">Contact</a></li>
-                                                <li class="dropdown">
-                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                                                        <ul class="dropdown-menu">
-                                                                <li><a href="#">Action</a></li>
-                                                                <li><a href="#">Another action</a></li>
-                                                                <li><a href="#">Something else here</a></li>
-                                                                <li role="separator" class="divider"></li>
-                                                                <li class="dropdown-header">Nav header</li>
-                                                                <li><a href="#">Separated link</a></li>
-                                                                <li><a href="#">One more separated link</a></li>
-                                                        </ul>
-                                                </li>
-                                        </ul>
-                                </div>
-                        </div>
-                </nav>
-                <!-- End Navbar -->
+    <head>
+            <title>Project Layout Manager Application</title>
+    </head>
 
 
-                <div id="canvas">
-                        <!-- Canvas Toolbar -->
-                        <div id="canvas-toolbar" class="container-fluid col-md-2 sidebar">
-                                <!--
-                                At the current development process, the values are limited through
-                                javascript. However, it still shows up to the user as whatever they put in (i.e.
-                                says "Potato" for the Size instead of changing it to the automatic default 1)
-                                We might need to use AngularJS to fix this later, or use javascript to change the text
-                                -->
-                                <div class="row inputbox">
-                                        <span class="toolbar-desc col-md-4">Size:</span>
-                                        <div class="col-md-2">
-                                                <span class="input-group input-group-sm" id="brush-size">
-                                                        <span class="input-group-btn" id="size-minus">
-                                                                <button class="btn brush-form-input" type="button">-</button>
-                                                        </span>
-                                                        <input type="text" class="form-control" id="size" value ="5">
-                                                        <span class="input-group-btn" id="size-plus">
-                                                                <button class="btn brush-form-input" type="button">+</button>
-                                                        </span>
-                                                </span>
-                                        </div>
-                                </div>
-
-                                <div class="row inputbox">
-                                        <span class="toolbar-desc col-md-4">R:</span>
-                                        <div class="col-md-2">
-                                                <span class="input-group input-group-sm">
-                                                        <span class="input-group-btn" id="red-minus">
-                                                                <button class="btn brush-form-input" type="button">-</button>
-                                                        </span>
-                                                        <input type="text" class="form-control" id="red" value="0">
-                                                        <span class="input-group-btn" id="red-plus">
-                                                                <button class="btn brush-form-input" type="button">+</button>
-                                                        </span>
-                                                </span>
-                                        </div>
-                                </div>
-                                <div class ="row inputbox">
-                                        <span class="toolbar-desc col-md-4">G:</span>
-                                        <div class="col-md-2">
-                                                <span class="input-group input-group-sm">
-                                                        <span class="input-group-btn" id="green-minus">
-                                                                <button class="btn brush-form-input" type="button">-</button>
-                                                        </span>
-                                                        <input type="text" class="form-control" id="green" value="0">
-                                                        <span class="input-group-btn" id="green-plus">
-                                                                <button class="btn brush-form-input" type="button">+</button>
-                                                        </span>
-                                                </span>
-                                        </div>
-                                </div>
-                                <div class="row inputbox">
-                                        <span class="toolbar-desc col-md-4">B:</span>
-                                        <div class="col-md-2">
-                                                <span class="input-group input-group-sm">
-                                                        <span class="input-group-btn" id="blue-minus">
-                                                                <button class="btn brush-form-input" type="button">-</button>
-                                                        </span>
-                                                        <input type="text" class="form-control" id="blue" value="0">
-                                                        <span class="input-group-btn" id="blue-plus">
-                                                                <button class="btn brush-form-input" type="button">+</button>
-                                                        </span>
-                                                </span>
-                                        </div>
-                                </div>
-                                <div class="row inputbox">
-                                        <span class="toolbar-desc col-md-4">A:</span>
-                                        <div class="col-md-2">
-                                                <span class="input-group input-group-sm">
-                                                        <span class="input-group-btn" id="alpha-minus">
-                                                                <button class="btn brush-form-input" type="button">-</button>
-                                                        </span>
-                                                        <input type="text" class="form-control brush-form-input" id="alpha" value="1">
-                                                        <span class="input-group-btn" id="alpha-plus">
-                                                                <button class="btn btn-default brush-form-input" type="button">+</button>
-                                                        </span>
-                                                </span>
-                                        </div>
-                                </div>
-                                <div class="col-md-12" id="fancy-color-preview" style="background-color:black;">
-                                </div>
-                                <div id="toolbar-brushes" class="row col-md-12">
-                                        <div id="pen" class="brush-form-input btn tool-active">
-                                                <img src="images/pen.png">
-                                        </div>
-                                        <div id="eraser" class="brush-form-input btn">
-                                                <img src="images/eraser.png">
-                                        </div>
-                                        <div id="cls" class="brush-form-input btn">
-                                                <img src="images/clear.png">
-                                        </div>
-                                </div>
-
-                                <div id="credits">
-                                        Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
-                                </div>
-                        </div>
-                        <div class="canvas col-md-offset-2">
-                                <canvas id="mainCanvas"></canvas>
-                        </div>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" id="selection" href="#">Canvas</a>
                 </div>
-        </body>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">Nav header</li>
+                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
 
-        <!--custom js goes here...-->
-        <script src="japps/paint.js"></script>
 
-        <!-- required licensing information! -->
+        <div id="canvas">
+            <!-- Canvas Toolbar -->
+            <div id="canvas-toolbar" class="container-fluid col-md-2 sidebar">
+                <!--
+                At the current development process, the values are limited through
+                javascript. However, it still shows up to the user as whatever they put in (i.e.
+                says "Potato" for the Size instead of changing it to the automatic default 1)
+                We might need to use AngularJS to fix this later, or use javascript to change the text
+                -->
+                <div class="row inputbox">
+                    <span class="toolbar-desc col-md-4">Size:</span>
+                    <div class="col-md-2">
+                        <span class="input-group input-group-sm" id="brush-size">
+                            <span class="input-group-btn" id="size-minus">
+                                <button class="btn brush-form-input" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control" id="size" value ="5">
+                            <span class="input-group-btn" id="size-plus">
+                                <button class="btn brush-form-input" type="button">+</button>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row inputbox">
+                    <span class="toolbar-desc col-md-4">R:</span>
+                    <div class="col-md-2">
+                        <span class="input-group input-group-sm">
+                            <span class="input-group-btn" id="red-minus">
+                                <button class="btn brush-form-input" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control" id="red" value="0">
+                            <span class="input-group-btn" id="red-plus">
+                                <button class="btn brush-form-input" type="button">+</button>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class ="row inputbox">
+                    <span class="toolbar-desc col-md-4">G:</span>
+                    <div class="col-md-2">
+                        <span class="input-group input-group-sm">
+                            <span class="input-group-btn" id="green-minus">
+                                <button class="btn brush-form-input" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control" id="green" value="0">
+                            <span class="input-group-btn" id="green-plus">
+                                <button class="btn brush-form-input" type="button">+</button>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row inputbox">
+                    <span class="toolbar-desc col-md-4">B:</span>
+                    <div class="col-md-2">
+                        <span class="input-group input-group-sm">
+                            <span class="input-group-btn" id="blue-minus">
+                                <button class="btn brush-form-input" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control" id="blue" value="0">
+                            <span class="input-group-btn" id="blue-plus">
+                                <button class="btn brush-form-input" type="button">+</button>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row inputbox">
+                    <span class="toolbar-desc col-md-4">A:</span>
+                    <div class="col-md-2">
+                        <span class="input-group input-group-sm">
+                            <span class="input-group-btn" id="alpha-minus">
+                                <button class="btn brush-form-input" type="button">-</button>
+                            </span>
+                            <input type="text" class="form-control brush-form-input" id="alpha" value="1">
+                            <span class="input-group-btn" id="alpha-plus">
+                                <button class="btn btn-default brush-form-input" type="button">+</button>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-12" id="fancy-color-preview" style="background-color:black;">
+                </div>
+                <div id="toolbar-brushes" class="row col-md-12">
+                    <div class="icon-row">
+                        <div id="pen" class="brush-form-input btn tool-active">
+                            <img src="images/pen.png">
+                        </div>
+                        <div id="eraser" class="brush-form-input btn">
+                            <img src="images/eraser.png">
+                        </div>
+                        <div id="bucket" class="brush-form-input btn">
+                            <img src="images/bucket.png">
+                        </div>
+                    </div>
+                    <div class="icon-row">
+                        <div id="undo" class="brush-form-input btn">
+                            <img src="images/undo.png">
+                        </div>
+                        <div id="redo" class="brush-form-input btn">
+                            <img src="images/redo.png">
+                        </div>
+                        <div id="cls" class="brush-form-input btn">
+                            <img src="images/clear.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="credits">
+                        Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
+                </div>
+            </div>
+            <div class="canvas col-md-offset-2">
+                <canvas id="mainCanvas"></canvas>
+            </div>
+        </div>
+    </body>
+
+    <!--custom js goes here...-->
+    <script src="japps/paint.js"></script>
+
+    <!-- required licensing information! -->
 </html>
