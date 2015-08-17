@@ -19,9 +19,9 @@ const BLUE = 2;
 const ALPHA = 3;
 
 //Valid draw modes: pen, eraser, bucket
-const PEN = "pen";
-const ERASER = "eraser";
-const BUCKET = "bucket";
+const PEN = 0;
+const ERASER = 1;
+const BUCKET = 2;
 
 // Point object
 function Point(x, y) {
@@ -43,8 +43,9 @@ function Drawable(dom) {
 };
 
 Drawable.prototype = {
+    draw: function() {},
     addPoint: function(x,y) {
-
+	this.points.push(new Point(x,y));
     }
 
 };
@@ -83,6 +84,7 @@ Line.prototype = {
         this.points.push(new Point(x,y));
     }
 };
+//Line.prototype.constructor = Line;
 
 // Color Component class
 function ColorComponent(id, componentValue, maxval, delta) {
@@ -240,9 +242,6 @@ var canvasObj = {
 	for (var i = 0; i < this.shapes.length; ++i) {
 	    this.shapes[i].draw();
 	}
-	
-
-
     },
 
 };
@@ -287,10 +286,10 @@ function _addMouseEvents() {
     $('canvas').mousedown(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
             canvasObj.penDown = true;
             canvasObj.draw(mouseX, mouseY, false);
-        } else if (canvasObj.currentDrawMode == "bucket") {
+        } else if (canvasObj.currentDrawMode == BUCKET) {
             /* WARNING:
                Currently uses pixel by pixel filling which is apparently slower vs filling in a
                rectangle of a larger area.
@@ -356,7 +355,7 @@ function _addMouseEvents() {
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") &&
+        if((canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) &&
            canvasObj.penDown) {
             canvasObj.draw(mouseX, mouseY, true);
         }
@@ -364,14 +363,14 @@ function _addMouseEvents() {
 
     $('canvas').mouseup(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
             canvasObj.penDown = false;
         }
     });
 
     $('canvas').mouseleave(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
             canvasObj.penDown = false;
         }
     });
@@ -403,7 +402,7 @@ function _addButtonEvents() {
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
-        canvasObj.currentDrawMode = "eraser";
+        canvasObj.currentDrawMode = ERASER;
 
         $('.tool-active').removeClass('tool-active');
         $('#eraser').addClass('tool-active');
@@ -411,7 +410,7 @@ function _addButtonEvents() {
 
     $('#pen').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = "pen";
+        canvasObj.currentDrawMode = PEN;
 
         $('.tool-active').removeClass('tool-active');
         $('#pen').addClass('tool-active');
@@ -419,7 +418,7 @@ function _addButtonEvents() {
 
     $('#bucket').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = "bucket";
+        canvasObj.currentDrawMode = BUCKET;
 
         $('.tool-active').removeClass('tool-active');
         $('#bucket').addClass('tool-active');
