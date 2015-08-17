@@ -27,29 +27,37 @@ const BUCKET = "bucket";
 function Point(x, y) {
     this.x = x;
     this.y = y;
-    this.point = [x,y];
 };
 
 Point.prototype = {
     setPoint: function(x, y) {
         this.x = x;
         this.y = y;
-        this.point = [x,y];
     }
 };
 
 // Shape base class
-function Shape(dom) {
-    this.points = [];
+function Line(dom) {
     this.dom = dom;
+    this.size = dom.lineWidth;
+    this.color = dom.strokeStyle;
+    this.style = dom.lineJoin;
+    this.points = [];
+    
 };
 
-Shape.prototype = {
+Line.prototype = {
     draw: function() {
         if (this.points.length === 0) return;
+	
+	this.dom.strokeStyle = this.color;
+	this.dom.lineWidth = this.size;
+	this.dom.lineJoin = this.style;
+	this.dom.lineCap = this.style;
         this.dom.beginPath();
-        this.dom.moveTo(this.points[0].x, this.points[0].y);
+        //this.dom.moveTo(this.points[0].x, this.points[0].y);
         for (var i = 1; i < this.points.length; ++i) {
+	    this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
             this.dom.lineTo(this.points[i].x, this.points[i].y);
         }
         this.dom.closePath();
@@ -58,16 +66,6 @@ Shape.prototype = {
     addPoint: function(x,y) {
         this.points.push(new Point(x,y));
     }
-};
-
-// Line class: inherits from Shape
-function ShapeLine(dom) {
-    Shape.call(this);
-};
-
-// Regular Polygon class: inherits from Shape
-function ShapeRegularPolygon(dom) {
-    Shape.call(this);
 };
 
 // Color Component class
@@ -154,7 +152,7 @@ var canvasObj = {
         ];
 
         // Holds all shapes for undo and redo
-        this.shapeStack = [];
+        this.shapes = [];
 
         // Initialize event listeners
         this.__initEvents__();
@@ -194,7 +192,8 @@ var canvasObj = {
                                   this.contextDOM.canvas.width, this.contextDOM.canvas.height);
     },
 
-    draw: function(x, y, drag) {
+    /*
+    old_draw: function(x, y, drag) {
         this.contextDOM.beginPath();
 
         if (drag) {
@@ -210,17 +209,25 @@ var canvasObj = {
         this.contextDOM.closePath();
         this.contextDOM.stroke();
     },
-    /*
-      draw2: function(x, y, drag) {
-      if (drag) {
+    */
+    
+    draw: function(x, y, drag) {
+        if (drag && this.shapes.length-1 >= 0) {
+	    var currLine = this.shapes[this.shapes.length-1];
+	    currLine.addPoint(x,y);
+        } else {
+	    var newLine = new Line(this.contextDOM);
+	    newLine.addPoint(x,y);
+            this.shapes.push(newLine);
+        }
+	this.clearCanvas();
+	for (var i = 0; i < this.shapes.length; ++i) {
+	    this.shapes[i].draw();
+	}
+	
 
 
-      } else {
-      canvasObj.shapes.push(new ShapeLine(canvasObj.contextDOM))
-      }
-
-
-      },*/
+    },
 
 };
 
@@ -268,25 +275,25 @@ function _addMouseEvents() {
             canvasObj.penDown = true;
             canvasObj.draw(mouseX, mouseY, false);
         } else if (canvasObj.currentDrawMode == "bucket") {
-        /* WARNING:
-           Currently uses pixel by pixel filling which is apparently slower vs filling in a
-           rectangle of a larger area.
+            /* WARNING:
+               Currently uses pixel by pixel filling which is apparently slower vs filling in a
+               rectangle of a larger area.
 
-           There is definitely room for opimization here.
+               There is definitely room for opimization here.
 
-           Right now this list is in order of percent of time taken of operation
-           (ie. biggest bottlenecks)
+               Right now this list is in order of percent of time taken of operation
+               (ie. biggest bottlenecks)
 
-           1. The queue is filled up very quickly. Might want to check for adjacent pixels
-           before checking instead of vice versa (current implementation)
+               1. The queue is filled up very quickly. Might want to check for adjacent pixels
+               before checking instead of vice versa (current implementation)
 
-           2. fillRect() is slow. however it seems like putImageData() does not work(?)
-           obtaining pixel data for point is inefficent as it creates the whole object rather than
-           just pixel data.
+               2. fillRect() is slow. however it seems like putImageData() does not work(?)
+               obtaining pixel data for point is inefficent as it creates the whole object rather than
+               just pixel data.
 
-           3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
-           for more ideas (right now this uses most simple one)
-           */
+               3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
+               for more ideas (right now this uses most simple one)
+            */
             queue = [];
             queue.push([mouseX, mouseY]);
             pointer_pixel_data = canvasObj.contextDOM.getImageData(mouseX, mouseY, 1, 1);
@@ -295,41 +302,40 @@ function _addMouseEvents() {
 
             while (queue.length > 0) {
                 current_point = queue.shift();
-                current_pixel_data = canvasObj.contextDOM.getImageData(current_point[0],
-                                                                       current_point[1], 
-                                                                       1, 1);
+                current_pixel_data = canvasObj.contextDOM.
+                    getImageData(current_point[0], current_point[1], 1, 1);
 
                 if (arrayColorCompare(current_pixel_data.data, pointer_pixel_data.data)) {
-                // Add ajacent pixels to queue, check later
-                curr_x = current_point[0];
-                curr_y = current_point[1];
-                if (canvasObj.contextDOM.canvas.width > (curr_x+1)) {
-                    queue.push([curr_x+1, curr_y]);
+                    // Add ajacent pixels to queue, check later
+                    curr_x = current_point[0];
+                    curr_y = current_point[1];
+                    if (canvasObj.contextDOM.canvas.width >= (curr_x+1)) {
+                        queue.push([curr_x+1, curr_y]);
+                    }
+
+                    if (canvasObj.contextDOM.canvas.height >= (curr_y+1)) {
+                        queue.push([curr_x, curr_y+1]);
+                    }
+
+                    if ((curr_x-1) >= 0) {
+                        queue.push([curr_x-1, curr_y]);
+                    }
+
+                    if ((curr_y-1) >= 0) {
+                        queue.push([curr_x, curr_y-1]);
+                    }
+
+                    current_pixel_data.data[RED] = fill_color[RED];
+                    current_pixel_data.data[GREEN] = fill_color[GREEN];
+                    current_pixel_data.data[BLUE] = fill_color[BLUE];
+                    current_pixel_data.data[ALPHA] = fill_color[ALPHA];
+
+                    canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
+                    //TODO finish me
+                    // right now it's so inefficent it crashes
                 }
-
-                if (canvasObj.contextDOM.canvas.height > (curr_y+1)) {
-                    queue.push([curr_x, curr_y+1]);
-                }
-
-                if ((curr_x-1) >= 0) {
-                    queue.push([curr_x-1, curr_y]);
-                }
-
-                if ((curr_y-1) >= 0) {
-                    queue.push([curr_x, curr_y-1]);
-                }
-
-                current_pixel_data.data[RED] = fill_color[RED];
-                current_pixel_data.data[GREEN] = fill_color[GREEN];
-                current_pixel_data.data[BLUE] = fill_color[BLUE];
-                current_pixel_data.data[ALPHA] = fill_color[ALPHA];
-
-                canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
-                //TODO finish me
-                // right now it's so inefficent it crashes
             }
-        }
-    }});
+        }});
 
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
@@ -341,12 +347,14 @@ function _addMouseEvents() {
     });
 
     $('canvas').mouseup(function(e) {
+        canvasObj.penDown = false;
         if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
             canvasObj.penDown = false;
         }
     });
 
     $('canvas').mouseleave(function(e) {
+        canvasObj.penDown = false;
         if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
             canvasObj.penDown = false;
         }
@@ -463,9 +471,6 @@ function deltae(lab1, lab2) {
 function calc_error(accepted, measured) {
     return (accepted - measured) / accepted;
 }
-
-
-
 
 // startup functions
 $(document).ready(function () {
