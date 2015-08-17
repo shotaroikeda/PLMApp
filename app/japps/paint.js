@@ -268,25 +268,25 @@ function _addMouseEvents() {
             canvasObj.penDown = true;
             canvasObj.draw(mouseX, mouseY, false);
         } else if (canvasObj.currentDrawMode == "bucket") {
-	    /* WARNING:
-	       Currently uses pixel by pixel filling which is apparently slower vs filling in a
-	       rectangle of a larger area.
+        /* WARNING:
+           Currently uses pixel by pixel filling which is apparently slower vs filling in a
+           rectangle of a larger area.
 
-	       There is definitely room for opimization here.
+           There is definitely room for opimization here.
 
-	       Right now this list is in order of percent of time taken of operation
-	       (ie. biggest bottlenecks)
+           Right now this list is in order of percent of time taken of operation
+           (ie. biggest bottlenecks)
 
-	       1. The queue is filled up very quickly. Might want to check for adjacent pixels
-	       before checking instead of vice versa (current implementation)
+           1. The queue is filled up very quickly. Might want to check for adjacent pixels
+           before checking instead of vice versa (current implementation)
 
-	       2. fillRect() is slow. however it seems like putImageData() does not work(?)
-	       obtaining pixel data for point is inefficent as it creates the whole object rather than
-	       just pixel data.
+           2. fillRect() is slow. however it seems like putImageData() does not work(?)
+           obtaining pixel data for point is inefficent as it creates the whole object rather than
+           just pixel data.
 
-	       3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
-	       for more ideas (right now this uses most simple one)
-	       */
+           3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
+           for more ideas (right now this uses most simple one)
+           */
             queue = [];
             queue.push([mouseX, mouseY]);
             pointer_pixel_data = canvasObj.contextDOM.getImageData(mouseX, mouseY, 1, 1);
@@ -295,40 +295,41 @@ function _addMouseEvents() {
 
             while (queue.length > 0) {
                 current_point = queue.shift();
-                current_pixel_data = canvasObj.contextDOM.
-		    getImageData(current_point[0], current_point[1], 1, 1);
+                current_pixel_data = canvasObj.contextDOM.getImageData(current_point[0],
+                                                                       current_point[1], 
+                                                                       1, 1);
 
                 if (arrayColorCompare(current_pixel_data.data, pointer_pixel_data.data)) {
-		    // Add ajacent pixels to queue, check later
-		    curr_x = current_point[0];
-		    curr_y = current_point[1];
-		    if (canvasObj.contextDOM.canvas.width >= (curr_x+1)) {
-			queue.push([curr_x+1, curr_y]);
-		    }
+                // Add ajacent pixels to queue, check later
+                curr_x = current_point[0];
+                curr_y = current_point[1];
+                if (canvasObj.contextDOM.canvas.width > (curr_x+1)) {
+                    queue.push([curr_x+1, curr_y]);
+                }
 
-		    if (canvasObj.contextDOM.canvas.height >= (curr_y+1)) {
-			queue.push([curr_x, curr_y+1]);
-		    }
+                if (canvasObj.contextDOM.canvas.height > (curr_y+1)) {
+                    queue.push([curr_x, curr_y+1]);
+                }
 
-		    if ((curr_x-1) >= 0) {
-			queue.push([curr_x-1, curr_y]);
-		    }
+                if ((curr_x-1) >= 0) {
+                    queue.push([curr_x-1, curr_y]);
+                }
 
-		    if ((curr_y-1) >= 0) {
-			queue.push([curr_x, curr_y-1]);
-		    }
+                if ((curr_y-1) >= 0) {
+                    queue.push([curr_x, curr_y-1]);
+                }
 
-		    current_pixel_data.data[RED] = fill_color[RED];
-		    current_pixel_data.data[GREEN] = fill_color[GREEN];
-		    current_pixel_data.data[BLUE] = fill_color[BLUE];
-		    current_pixel_data.data[ALPHA] = fill_color[ALPHA];
+                current_pixel_data.data[RED] = fill_color[RED];
+                current_pixel_data.data[GREEN] = fill_color[GREEN];
+                current_pixel_data.data[BLUE] = fill_color[BLUE];
+                current_pixel_data.data[ALPHA] = fill_color[ALPHA];
 
-		    canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
+                canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
                 //TODO finish me
-		// right now it's so inefficent it crashes
+                // right now it's so inefficent it crashes
             }
         }
-	}});
+    }});
 
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
