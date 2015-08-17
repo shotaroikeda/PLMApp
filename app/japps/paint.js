@@ -158,8 +158,6 @@ var canvasObj = {
 
 };
 
-<<<<<<< HEAD
-
 function _addColorEvents(color) {
     // pass by constant ex: RED, GREEN, BLUE, ALPHA
     var component = canvasObj.colorComponents[color];
@@ -189,52 +187,32 @@ function _addColorEvents(color) {
 function _addMouseEvents() {
 
     $('canvas').mousedown(function(e) {
-        canvasObj.penDown = true;
-        canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+        var mouseX = e.pageX - this.offsetLeft;
+        var mouseY = e.pageY - this.offsetTop;
+        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+            canvasObj.penDown = true;
+            canvasObj.draw(mouseX, mouseY, false);
+        } else if (canvasObj.currentDrawMode == "bucket") {
+
+        }
     });
 
     $('canvas').mousemove(function(e) {
-        if(canvasObj.penDown) {
+        if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") && canvasObj.penDown) {
             canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
         }
     });
-=======
-$('canvas').mousedown(function(e) {
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
-    if (canvasObj.currentDrawMode == "pen") {
-
-        canvasObj.penDown = true;
-        canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
-    } else if (currentDrawMode == "bucket") {
-        var context = this.getContext('2d');
-        
-    }
-});
-
-$('canvas').mousemove(function(e) {
-    if(canvasObj.currentDrawMode == "pen" && canvasObj.penDown) {
-        canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-    }
-});
-
-$('canvas').mouseup(function(e) {
-    if (canvasObj.currentDrawMode == "pen")
-        canvasObj.penDown = false;
-});
-
-$('canvas').mouseleave(function(e) {
-    if (canvasObj.currentDrawMode == "pen")
-        canvasObj.penDown = false;
-});
->>>>>>> e149a9f2e41621a540cae76fdfe3ba11852e31e9
 
     $('canvas').mouseup(function(e) {
-        canvasObj.penDown = false;
+        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+            canvasObj.penDown = false;
+        }
     });
 
     $('canvas').mouseleave(function(e) {
-        canvasObj.penDown = false;
+        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+            canvasObj.penDown = false;
+        }
     });
 
 };
@@ -266,70 +244,41 @@ function _addButtonEvents() {
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
         canvasObj.currentDrawMode = "eraser";
+        
         $('.tool-active').removeClass('tool-active');
         $('#eraser').addClass('tool-active');
     });
 
     $('#pen').click(function() {
-        //todo this function call is unnecessary
-	canvasObj.applyRGBA();
+        canvasObj.applyRGBA();
         canvasObj.currentDrawMode = "pen";
 
         $('.tool-active').removeClass('tool-active');
         $('#pen').addClass('tool-active');
     });
-};
 
+    $('#bucket').click(function() {
+        canvasObj.applyRGBA();
+        canvasObj.currentDrawMode = "bucket";
+
+        $('.tool-active').removeClass('tool-active');
+        $('#bucket').addClass('tool-active');
+    });
+
+    $('#undo').click(function() {
+        //TODO implement me
+    });
+
+    $('#redo').click(function() {
+        //TODO implement me
+    });
+};
 
 canvasObj.__defaultSettings__();
 // startup functions
 $(document).ready(function () {
 });
 
-
-///////////////////////////////////
-//         Mitsumi's Trash       //
-///////////////////////////////////
-$('#bucket').click(function() {
-    canvasObj.setColor(canvasObj.colorComponents[RED].componentValue,
-                       canvasObj.colorComponents[GREEN].componentValue,
-                       canvasObj.colorComponents[BLUE].componentValue,
-                       canvasObj.colorComponents[ALPHA].componentValue);
-    canvasObj.currentDrawMode = "bucket";
-
-    $('.tool-active').removeClass('tool-active');
-    $('#bucket').addClass('tool-active');
-});
-<<<<<<< HEAD
-$('#undo').click(function() {
-    //TODO implement me
-});
-$('#redo').click(function() {
-    //TODO implement me
-});
-=======
-$('#bucket').click(function() {
-    canvasObj.setColor(canvasObj.colorComponents[RED].componentValue,
-                       canvasObj.colorComponents[GREEN].componentValue,
-                       canvasObj.colorComponents[BLUE].componentValue,
-                       canvasObj.colorComponents[ALPHA].componentValue);
-    canvasObj.currentDrawMode = "bucket";
-
-    $('.tool-active').removeClass('tool-active');
-    $('#bucket').addClass('tool-active');
-});
-$('#undo').click(function() {
-    //TODO implement me
-});
-$('#redo').click(function() {
-    //TODO implement me
-});
-
-// startup functions
-$(document).ready(function () {
-});
-
->>>>>>> e149a9f2e41621a540cae76fdfe3ba11852e31e9
 //Convert colorspace RGB to XYZ
 function rgb_to_xyz(rgb) {
     for (var i = RED; i <= BLUE; i++) {
@@ -381,8 +330,4 @@ function deltae(lab1, lab2) {
 //returns a decimal between 0 and 1 calculating the percent error between two numerical values
 function calc_error(accepted, measured) {
     return (accepted - measured) / accepted;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e149a9f2e41621a540cae76fdfe3ba11852e31e9
