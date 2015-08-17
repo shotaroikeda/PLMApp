@@ -310,14 +310,12 @@ function _addMouseEvents() {
 		    current_pixel_data.data[BLUE] = fill_color[BLUE];
 		    current_pixel_data.data[ALPHA] = fill_color[ALPHA];
 
-		    canvasObj.contextDOM.putImageData(current_pixel_data, curr_x, curr_y);
-		    
-                }
+		    canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
                 //TODO finish me
 		// right now it's so inefficent it crashes
             }
         }
-    });
+	}});
 
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
