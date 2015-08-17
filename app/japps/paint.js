@@ -125,6 +125,8 @@ $('canvas').mousedown(function(e) {
 
         canvasObj.penDown = true;
         canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+    } else if (currentDrawMode == "bucket") {
+        //TODO bucket mode
     }
 });
 
