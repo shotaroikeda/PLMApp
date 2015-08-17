@@ -23,7 +23,7 @@ const PEN = "pen";
 const ERASER = "eraser";
 const BUCKET = "bucket";
 
-// Point opject
+// Point object
 function Point(x, y) {
     this.x = x;
     this.y = y;
@@ -36,8 +36,22 @@ Point.prototype = {
     }
 };
 
-// Shape base class
+// Drawable base class
+function Drawable(dom) {
+    this.dom = dom;
+    this.points = [];
+};
+
+Drawable.prototype = {
+    addPoint: function(x,y)
+
+};
+
+
+// Line class
 function Line(dom) {
+    Drawable.apply(this, dom);
+    
     this.dom = dom;
     this.size = dom.lineWidth;
     this.color = dom.strokeStyle;
