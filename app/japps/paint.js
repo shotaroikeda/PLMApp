@@ -273,6 +273,19 @@ function _addMouseEvents() {
 	       rectangle of a larger area.
 
 	       There is definitely room for opimization here.
+
+	       Right now this list is in order of percent of time taken of operation
+	       (ie. biggest bottlenecks)
+
+	       1. The queue is filled up very quickly. Might want to check for adjacent pixels
+	       before checking instead of vice versa (current implementation)
+
+	       2. fillRect() is slow. however it seems like putImageData() does not work(?)
+	       obtaining pixel data for point is inefficent as it creates the whole object rather than
+	       just pixel data.
+
+	       3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
+	       for more ideas (right now this uses most simple one)
 	       */
             queue = [];
             queue.push([mouseX, mouseY]);
