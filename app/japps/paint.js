@@ -119,30 +119,30 @@ var canvasObj = {
 };
 
 $('canvas').mousedown(function(e) {
-    if (currentDrawMode == "pen") {
+    if (canvasObj.currentDrawMode == "pen") {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
 
         canvasObj.penDown = true;
         canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
     } else if (currentDrawMode == "bucket") {
-        //TODO bucket mode
+        
     }
 });
 
 $('canvas').mousemove(function(e) {
-    if(currentDrawMode == "pen" && canvasObj.penDown) {
+    if(canvasObj.currentDrawMode == "pen" && canvasObj.penDown) {
         canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
     }
 });
 
 $('canvas').mouseup(function(e) {
-    if (currentDrawMode == "pen")
+    if (canvasObj.currentDrawMode == "pen")
         canvasObj.penDown = false;
 });
 
 $('canvas').mouseleave(function(e) {
-    if (currentDrawMode == "pen")
+    if (canvasObj.currentDrawMode == "pen")
         canvasObj.penDown = false;
 });
 
@@ -271,3 +271,56 @@ $('#redo').click(function() {
 // startup functions
 $(document).ready(function () {
 });
+
+//Convert colorspace RGB to XYZ
+function rgb_to_xyz(rgb) {
+    for (var i = RED; i <= BLUE; i++) {
+        if (rgb[i] > 0.04045) {
+            rgb[i] = Math.pow((rgb[i] + 0.055) / 1.055, 2.4);
+        } else {
+            rgb[i] /= 12.92;
+        }
+        rgb[i] *= 100;
+    }
+
+    x = rgb[RED] * 0.4124 + rgb[GREEN] * 0.3576 + rgb[BLUE] * 0.1805;
+    y = rgb[RED] * 0.2126 + rgb[GREEN] * 0.7152 + rgb[BLUE] * 0.0722;
+    z = rgb[RED] * 0.0193 + rgb[GREEN] * 0.1192 + rgb[BLUE] * 0.9505;
+
+    return [x, y, z];
+}
+
+//convert colorspace XYZ to CIE-L*ab
+function xyz_to_lab(xyz) {
+    xyz[0] /= 95.047;
+    xyz[1] /= 100.000;
+    xyz[2] /= 108.883;
+
+    for (var i = 0; i <= 3; i++) {
+        if (xyz[i] > 0.008856) {
+            xyz[i] = Math.pow(xyz[i], 1 / 3);
+        } else {
+            xyz[i] = (7.787 * xyz[i]) + (16 / 116);
+        }
+    }
+
+    l = (116 * xyz[1]) - 16; 
+    a = 500 * (xyz[0] - xyz[1]);
+    b = 200 * (xyz[1] - xyz[2]);
+
+    return [l, a, b];
+}
+
+//calculate deltaE between two CIE-L*ab colorspace values
+function deltae(lab1, lab2) {
+    dl = lab1[0] - lab2[0];
+    da = lab1[1] - lab2[1];
+    db = lab1[2] - lab2[2];
+
+    return Math.sqrt(dl * dl + da * da + db * db);
+}
+
+//returns a decimal between 0 and 1 calculating the percent error between two numerical values
+function calc_error(accepted, measured) {
+    return (accepted - measured) / accepted;
+}
