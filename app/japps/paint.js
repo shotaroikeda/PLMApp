@@ -119,13 +119,14 @@ var canvasObj = {
 };
 
 $('canvas').mousedown(function(e) {
+    var mouseX = e.pageX - this.offsetLeft;
+    var mouseY = e.pageY - this.offsetTop;
     if (canvasObj.currentDrawMode == "pen") {
-        var mouseX = e.pageX - this.offsetLeft;
-        var mouseY = e.pageY - this.offsetTop;
 
         canvasObj.penDown = true;
         canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
     } else if (currentDrawMode == "bucket") {
+        var context = this.getContext('2d');
         
     }
 });
