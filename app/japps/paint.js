@@ -119,25 +119,29 @@ var canvasObj = {
 };
 
 $('canvas').mousedown(function(e) {
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
+    if (currentDrawMode == "pen") {
+        var mouseX = e.pageX - this.offsetLeft;
+        var mouseY = e.pageY - this.offsetTop;
 
-    canvasObj.penDown = true;
-    canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+        canvasObj.penDown = true;
+        canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+    }
 });
 
 $('canvas').mousemove(function(e) {
-    if(canvasObj.penDown) {
+    if(currentDrawMode == "pen" && canvasObj.penDown) {
         canvasObj.draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
     }
 });
 
 $('canvas').mouseup(function(e) {
-    canvasObj.penDown = false;
+    if (currentDrawMode == "pen")
+        canvasObj.penDown = false;
 });
 
 $('canvas').mouseleave(function(e) {
-    canvasObj.penDown = false;
+    if (currentDrawMode == "pen")
+        canvasObj.penDown = false;
 });
 
 canvasObj.__defaultSettings__();
