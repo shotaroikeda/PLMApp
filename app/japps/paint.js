@@ -12,79 +12,92 @@
 // Canvas Panel drawing related things. Not selected tools //
 /////////////////////////////////////////////////////////////
 
-//CONSTANTS - use for indexing canvasobj colorcomponents
+/*** CONSTANTS ***/
+// IE does not support constants, but we don't care about IE
+// Indexing canvasobj colorcomponents
 const RED = 0;
 const GREEN = 1;
 const BLUE = 2;
 const ALPHA = 3;
+// Valid draw modes: pen, eraser, bucket
+const PEN = 0;
+const ERASER = 1;
+const BUCKET = 2;
 
-//Valid draw modes: pen, eraser, bucket
-const PEN = "pen";
-const ERASER = "eraser";
-const BUCKET = "bucket";
+/*** Local Inheritance function ***/
+// First argument is parent class, second is properties to add on
+// Refer to Line class as an example
+function _extend(parent, properties) {
+    function proxy() {};
+    proxy.prototype = Object.create(parent.prototype);
+    $.extend(proxy.prototype, properties);
+    return proxy.prototype;
+};
 
-// Point object
-function Point(x, y) {
+/*** Point class ***/
+function Point(x, y) { // Constructor with default variables
     this.x = x;
     this.y = y;
 };
-
-Point.prototype = {
+Point.prototype = { // Methods
     setPoint: function(x, y) {
         this.x = x;
         this.y = y;
     }
 };
 
-// Drawable base class
+/*** Drawable base class ***/
 function Drawable(dom) {
     this.dom = dom;
     this.points = [];
 };
-
 Drawable.prototype = {
-    addPoint: function(x,y) {
+    draw: function() {
+    },
 
+    addPoint: function(x,y) {
+        this.points.push(new Point(x,y));
     }
 
 };
 
-
-// Line class
+/*** Line class ***/
+// Constructor
 function Line(dom) {
-    Drawable.apply(this, dom);
-    
-    this.dom = dom;
+    // Call parent constructor
+    Drawable.call(this, dom);
+
+    // Instantiate member variables
     this.size = dom.lineWidth;
     this.color = dom.strokeStyle;
     this.style = dom.lineJoin;
-    this.points = [];
-    
-};
 
-Line.prototype = {
+};
+// Line extends Drawable; properties as second argument
+Line.prototype = _extend( Drawable, {
+    // Methods including overriden ones
+    // @Override
     draw: function() {
         if (this.points.length === 0) return;
-	
-	this.dom.strokeStyle = this.color;
-	this.dom.lineWidth = this.size;
-	this.dom.lineJoin = this.style;
-	this.dom.lineCap = this.style;
+
+        this.dom.strokeStyle = this.color;
+        this.dom.lineWidth = this.size;
+        this.dom.lineJoin = this.style;
+        this.dom.lineCap = this.style;
         this.dom.beginPath();
         //this.dom.moveTo(this.points[0].x, this.points[0].y);
         for (var i = 1; i < this.points.length; ++i) {
-	    this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
+            this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
             this.dom.lineTo(this.points[i].x, this.points[i].y);
         }
         this.dom.closePath();
         this.dom.stroke();
     },
-    addPoint: function(x,y) {
-        this.points.push(new Point(x,y));
-    }
-};
 
-// Color Component class
+});
+
+/*** Color Component class ***/
+// Constructor
 function ColorComponent(id, componentValue, maxval, delta) {
     // stores ID of the class
     this.classId = id;
@@ -95,7 +108,6 @@ function ColorComponent(id, componentValue, maxval, delta) {
     this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
     this.delta = typeof delta !== 'undefined' ? delta : 1;
 };
-
 ColorComponent.prototype = {
     // Changes component value by a +1 or -1
     changeValue: function(change) {
@@ -167,8 +179,14 @@ var canvasObj = {
             new ColorComponent("#alpha", 1, 1, 0.1)
         ];
 
-        // Holds all shapes for undo and redo
-        this.shapes = [];
+        // Holds all shapes for tools or undo/redo
+        this.drawables = [];
+	this.drawablesStart = 0;
+	this.drawablesEnd = 0;
+	
+	// Holds previous shapes for resetCanvas function
+	this.resetIndices = [0];
+	this.resetMarker = 0;
 
         // Initialize event listeners
         this.__initEvents__();
@@ -205,7 +223,8 @@ var canvasObj = {
 
     clearCanvas: function() {
         this.contextDOM.clearRect(0, 0,
-                                  this.contextDOM.canvas.width, this.contextDOM.canvas.height);
+                                  this.contextDOM.canvas.width,
+				  this.contextDOM.canvas.height);
     },
 
     draw: function(x, y, drag) {
@@ -384,6 +403,105 @@ var canvasObj = {
     calc_error: function(accepted, measured) {
         return Math.abs(accepted - measured) / accepted;
     }
+    resetCanvas: function() {
+	this.clearCanvas();
+	this.drawablesStart = this.drawables.length;
+	this.resetIndices.push(this.drawablesStart);
+	this.resetMarker++;
+    },
+
+    undo: function() {
+	//console.log("undo " + this.resetIndices.length)
+	if (this.drawablesEnd > this.drawablesStart) {
+	    console.log("end>start")
+	    this.drawablesEnd--;
+	    this.drawCanvas();
+	} else if (this.drawablesEnd === this.drawablesStart &&
+	    this.resetIndices.length > 1) {
+	    this.resetMarker--;
+	    this.drawablesStart = this.resetIndices[this.resetMarker];
+	    this.drawCanvas();
+	}
+	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
+    },
+
+    redo: function() {
+	// TODO impliment binary search on resetIndices
+	// and cut points from addDrawable and resetCanvas (actions);
+	console.log("redo")
+	if ((this.resetMarker === this.resetIndices.length - 1 &&
+	     this.drawablesEnd < this.drawables.length) ||
+	     this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
+	    console.log("ran if")
+	    this.drawablesEnd++;
+	    this.drawCanvas();    
+	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
+	    this.drawablesStart = this.drawablesEnd;
+	    this.resetMarker++;
+	    this.drawCanvas();
+	    console.log("ran elif")
+	}
+	console.log("start: " + this.drawablesStart +
+		    " end: " + this.drawablesEnd +
+		    " mark+ " + this.resetIndices[this.resetMarker+1]);
+	/*else if (this.drawabkesMarker === this.drawables.length &&
+		   this.resetStack)*/
+    },
+
+    /*
+      old_draw: function(x, y, drag) {
+      this.contextDOM.beginPath();
+
+      if (drag) {
+      var prevX = this.__previous_coord__[0];
+      var prevY = this.__previous_coord__[1];
+      this.contextDOM.moveTo(prevX, prevY);
+      } else {
+      this.contextDOM.moveTo(x - 1, y);
+      }
+      this.__previous_coord__ = [x, y];
+
+      this.contextDOM.lineTo(x, y);
+      this.contextDOM.closePath();
+      this.contextDOM.stroke();
+      },
+    */
+    
+    drawCanvas: function() {
+        this.clearCanvas();
+        for (var i = this.drawablesStart; i < this.drawablesEnd; ++i)
+            this.drawables[i].draw();
+    },
+
+    addDrawable: function(d) {
+	if (this.drawablesEnd !== this.drawables.length) {
+	    this.drawables.length = this.drawablesEnd;
+	}
+	this.drawables.push(d);
+	
+	//if (this.drawables.length === 1)
+	//    return;
+	//else
+	this.drawablesEnd++;
+	
+	
+    },
+
+    drawLine: function(x, y, drag) {
+        if (drag && this.drawables.length-1 >= 0) {
+            var currLine = this.drawables[this.drawables.length-1];
+            currLine.addPoint(x,y);
+        } else {
+            var newLine = new Line(this.contextDOM);
+            newLine.addPoint(x,y);
+            newLine.addPoint(x-1, y);
+            this.addDrawable(newLine);
+        }
+        this.drawCanvas();
+    },
+
+
+
 };
 
 function _addColorEvents(color) {
@@ -426,33 +544,46 @@ function _addMouseEvents() {
     $('canvas').mousedown(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+
+        switch(canvasObj.currentDrawMode) {
+        case PEN:
+        case ERASER:
             canvasObj.penDown = true;
-            canvasObj.draw(mouseX, mouseY, false);
-        } else if (canvasObj.currentDrawMode == "bucket") {
+            canvasObj.drawLine(mouseX, mouseY, false);
+            break;
+        case BUCKET:
             canvasObj.fill(mouseX, mouseY);
+    	    break;
+    	default:
+	       break;
         }
     });
 
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if((canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") &&
-           canvasObj.penDown) {
-            canvasObj.draw(mouseX, mouseY, true);
-        }
+	switch(canvasObj.currentDrawMode) {
+	case PEN:
+	case ERASER:
+	    if (canvasObj.penDown) {
+		canvasObj.drawLine(mouseX, mouseY, true);
+	    }
+	    break;
+	default:
+	    break;
+	}
     });
 
     $('canvas').mouseup(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
             canvasObj.penDown = false;
         }
     });
 
     $('canvas').mouseleave(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == "pen" || canvasObj.currentDrawMode == "eraser") {
+        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
             canvasObj.penDown = false;
         }
     });
@@ -462,7 +593,7 @@ function _addMouseEvents() {
 function _addButtonEvents() {
     // Clear canvas
     $('#cls').click(function () {
-        canvasObj.clearCanvas();
+        canvasObj.resetCanvas();
     });
 
     // Brush size events
@@ -480,11 +611,11 @@ function _addButtonEvents() {
     $('#size').focusout(function() {
         $('#size').val(canvasObj.contextDOM.lineWidth);
     });
-
+    
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
-        canvasObj.currentDrawMode = "eraser";
+        canvasObj.currentDrawMode = ERASER;
 
         $('.tool-active').removeClass('tool-active');
         $('#eraser').addClass('tool-active');
@@ -492,7 +623,7 @@ function _addButtonEvents() {
 
     $('#pen').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = "pen";
+        canvasObj.currentDrawMode = PEN;
 
         $('.tool-active').removeClass('tool-active');
         $('#pen').addClass('tool-active');
@@ -500,18 +631,20 @@ function _addButtonEvents() {
 
     $('#bucket').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = "bucket";
+        canvasObj.currentDrawMode = BUCKET;
 
         $('.tool-active').removeClass('tool-active');
         $('#bucket').addClass('tool-active');
     });
 
     $('#undo').click(function() {
-        //TODO implement me
+        //WIP
+	canvasObj.undo();
     });
 
     $('#redo').click(function() {
-        //TODO implement me
+        //WIP
+	canvasObj.redo();
     });
 };
 
