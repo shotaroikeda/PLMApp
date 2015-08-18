@@ -12,66 +12,73 @@
 // Canvas Panel drawing related things. Not selected tools //
 /////////////////////////////////////////////////////////////
 
-//CONSTANTS - use for indexing canvasobj colorcomponents
+/*** CONSTANTS ***/
+// IE does not support constants, but we don't care about IE
+// Indexing canvasobj colorcomponents
 const RED = 0;
 const GREEN = 1;
 const BLUE = 2;
 const ALPHA = 3;
-
-//Valid draw modes: pen, eraser, bucket
+// Valid draw modes: pen, eraser, bucket
 const PEN = 0;
 const ERASER = 1;
 const BUCKET = 2;
 
-// Inheritance function
-function _extends(parent, properties) {
+/*** Local Inheritance function ***/
+// First argument is parent class, second is properties to add on
+// Refer to Line class as an example
+function _extend(parent, properties) {
     function proxy() {};
     proxy.prototype = Object.create(parent.prototype);
-    proxy.prototype = properties;
+    $.extend(proxy.prototype, properties);
     return proxy.prototype;
 };
 
-// Point object
-function Point(x, y) {
+/*** Point class ***/
+function Point(x, y) { // Constructor with default variables
     this.x = x;
     this.y = y;
 };
-
-Point.prototype = {
+Point.prototype = { // Methods
     setPoint: function(x, y) {
         this.x = x;
         this.y = y;
     }
 };
 
-// Drawable base class
+/*** Drawable base class ***/
 function Drawable(dom) {
     this.dom = dom;
     this.points = [];
 };
 Drawable.prototype = {
-    draw: function() {console.log("parent")},
+    draw: function() {
+    },
     
     addPoint: function(x,y) {
 	this.points.push(new Point(x,y));
     }
-   
+    
 };
+
 /*** Line class ***/
 // Constructor
 function Line(dom) {
     // Call parent constructor
-    Drawable.call(this);
-    this.dom = dom;
+    Drawable.call(this, dom);
+
+    // Instantiate member variables
     this.size = dom.lineWidth;
     this.color = dom.strokeStyle;
     this.style = dom.lineJoin;
     
 };
-// Line inherits from Drawable; properties as second argument
-Line.prototype = _extends(Drawable, {
+// Line extends Drawable; properties as second argument
+Line.prototype = _extend( Drawable, {
+    // Methods including overriden ones
+
+    // @Override
     draw: function() {
-	console.log(this.points);
         if (this.points.length === 0) return;
 	
 	this.dom.strokeStyle = this.color;
@@ -88,15 +95,10 @@ Line.prototype = _extends(Drawable, {
         this.dom.stroke();
     },
     
-    addPoint: function(x,y) {
-        this.points.push(new Point(x,y));
-    }
-    
 });
 
-
 /*** Color Component class ***/
-//constructor
+// Constructor
 function ColorComponent(id, componentValue, maxval, delta) {
     // stores ID of the class
     this.classId = id;
@@ -107,7 +109,6 @@ function ColorComponent(id, componentValue, maxval, delta) {
     this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
     this.delta = typeof delta !== 'undefined' ? delta : 1;
 };
-// No inheritance
 ColorComponent.prototype = {
     // Changes component value by a +1 or -1
     changeValue: function(change) {
