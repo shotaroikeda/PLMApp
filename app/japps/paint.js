@@ -224,7 +224,7 @@ var canvasObj = {
     clearCanvas: function() {
         this.contextDOM.clearRect(0, 0,
                                   this.contextDOM.canvas.width,
-				  this.contextDOM.canvas.height);
+				                  this.contextDOM.canvas.height);
     },
 
     draw: function(x, y, drag) {
@@ -399,53 +399,49 @@ var canvasObj = {
         return e;
     },
 
-    //returns a decimal between 0 and 1 calculating the percent error between two numerical values
-    calc_error: function(accepted, measured) {
-        return Math.abs(accepted - measured) / accepted;
-    }
     resetCanvas: function() {
-	this.clearCanvas();
-	this.drawablesStart = this.drawables.length;
-	this.resetIndices.push(this.drawablesStart);
-	this.resetMarker++;
+        this.clearCanvas();
+        this.drawablesStart = this.drawables.length;
+        this.resetIndices.push(this.drawablesStart);
+        this.resetMarker++;
     },
 
     undo: function() {
-	//console.log("undo " + this.resetIndices.length)
-	if (this.drawablesEnd > this.drawablesStart) {
-	    console.log("end>start")
-	    this.drawablesEnd--;
-	    this.drawCanvas();
-	} else if (this.drawablesEnd === this.drawablesStart &&
-	    this.resetIndices.length > 1) {
-	    this.resetMarker--;
-	    this.drawablesStart = this.resetIndices[this.resetMarker];
-	    this.drawCanvas();
-	}
-	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
+    	//console.log("undo " + this.resetIndices.length)
+    	if (this.drawablesEnd > this.drawablesStart) {
+    	    console.log("end>start")
+    	    this.drawablesEnd--;
+    	    this.drawCanvas();
+    	} else if (this.drawablesEnd === this.drawablesStart &&
+    	    this.resetIndices.length > 1) {
+    	    this.resetMarker--;
+    	    this.drawablesStart = this.resetIndices[this.resetMarker];
+    	    this.drawCanvas();
+    	}
+    	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
     },
 
     redo: function() {
-	// TODO impliment binary search on resetIndices
-	// and cut points from addDrawable and resetCanvas (actions);
-	console.log("redo")
-	if ((this.resetMarker === this.resetIndices.length - 1 &&
-	     this.drawablesEnd < this.drawables.length) ||
-	     this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
-	    console.log("ran if")
-	    this.drawablesEnd++;
-	    this.drawCanvas();    
-	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
-	    this.drawablesStart = this.drawablesEnd;
-	    this.resetMarker++;
-	    this.drawCanvas();
-	    console.log("ran elif")
-	}
-	console.log("start: " + this.drawablesStart +
-		    " end: " + this.drawablesEnd +
-		    " mark+ " + this.resetIndices[this.resetMarker+1]);
-	/*else if (this.drawabkesMarker === this.drawables.length &&
-		   this.resetStack)*/
+    	// TODO impliment binary search on resetIndices
+    	// and cut points from addDrawable and resetCanvas (actions);
+    	console.log("redo")
+    	if ((this.resetMarker === this.resetIndices.length - 1 &&
+            this.drawablesEnd < this.drawables.length) ||
+            this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
+    	    console.log("ran if")
+    	    this.drawablesEnd++;
+    	    this.drawCanvas();    
+    	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
+    	    this.drawablesStart = this.drawablesEnd;
+    	    this.resetMarker++;
+    	    this.drawCanvas();
+    	    console.log("ran elif")
+    	}
+    	console.log("start: " + this.drawablesStart +
+    		    " end: " + this.drawablesEnd +
+    		    " mark+ " + this.resetIndices[this.resetMarker+1]);
+    	/*else if (this.drawabkesMarker === this.drawables.length &&
+    		   this.resetStack)*/
     },
 
     /*
@@ -611,7 +607,7 @@ function _addButtonEvents() {
     $('#size').focusout(function() {
         $('#size').val(canvasObj.contextDOM.lineWidth);
     });
-    
+
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
