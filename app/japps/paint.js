@@ -24,8 +24,11 @@ const ERASER = 1;
 const BUCKET = 2;
 
 // Inheritance function
-function _extends(child, parent) {
-    child.prototype = Object.create(parent.prototype);
+function _extends(parent, properties) {
+    function proxy() {};
+    proxy.prototype = Object.create(parent.prototype);
+    proxy.prototype = properties;
+    return proxy.prototype;
 };
 
 // Point object
@@ -54,10 +57,10 @@ Drawable.prototype = {
     }
    
 };
-
-// Line class
-
+/*** Line class ***/
+// Constructor
 function Line(dom) {
+    // Call parent constructor
     Drawable.call(this);
     this.dom = dom;
     this.size = dom.lineWidth;
@@ -65,11 +68,8 @@ function Line(dom) {
     this.style = dom.lineJoin;
     
 };
-// Line inherits from Drawable
-//Line.prototype = Object.create(Drawable.prototype);
-_extends(Line, Drawable);
-Line.prototype = {
-    
+// Line inherits from Drawable; properties as second argument
+Line.prototype = _extends(Drawable, {
     draw: function() {
 	console.log(this.points);
         if (this.points.length === 0) return;
@@ -92,12 +92,11 @@ Line.prototype = {
         this.points.push(new Point(x,y));
     }
     
-};
+});
 
-//inherits(Line, Drawable);
-//Inheritance is stupidly broken..
 
-// Color Component class
+/*** Color Component class ***/
+//constructor
 function ColorComponent(id, componentValue, maxval, delta) {
     // stores ID of the class
     this.classId = id;
@@ -108,7 +107,7 @@ function ColorComponent(id, componentValue, maxval, delta) {
     this.maxval = typeof maxval !== 'undefined' ? maxval : 255;
     this.delta = typeof delta !== 'undefined' ? delta : 1;
 };
-
+// No inheritance
 ColorComponent.prototype = {
     // Changes component value by a +1 or -1
     changeValue: function(change) {
