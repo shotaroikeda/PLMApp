@@ -23,6 +23,11 @@ const PEN = 0;
 const ERASER = 1;
 const BUCKET = 2;
 
+// Inheritance function
+function _extends(child, parent) {
+    child.prototype = Object.create(parent.prototype);
+};
+
 // Point object
 function Point(x, y) {
     this.x = x;
@@ -41,30 +46,32 @@ function Drawable(dom) {
     this.dom = dom;
     this.points = [];
 };
-
 Drawable.prototype = {
-    draw: function() {},
+    draw: function() {console.log("parent")},
+    
     addPoint: function(x,y) {
 	this.points.push(new Point(x,y));
     }
-
+   
 };
 
-
 // Line class
+
 function Line(dom) {
-    Drawable.apply(this, dom);
-    
+    Drawable.call(this);
     this.dom = dom;
     this.size = dom.lineWidth;
     this.color = dom.strokeStyle;
     this.style = dom.lineJoin;
-    this.points = [];
     
 };
-
+// Line inherits from Drawable
+//Line.prototype = Object.create(Drawable.prototype);
+_extends(Line, Drawable);
 Line.prototype = {
+    
     draw: function() {
+	console.log(this.points);
         if (this.points.length === 0) return;
 	
 	this.dom.strokeStyle = this.color;
@@ -80,11 +87,15 @@ Line.prototype = {
         this.dom.closePath();
         this.dom.stroke();
     },
+    
     addPoint: function(x,y) {
         this.points.push(new Point(x,y));
     }
+    
 };
-//Line.prototype.constructor = Line;
+
+//inherits(Line, Drawable);
+//Inheritance is stupidly broken..
 
 // Color Component class
 function ColorComponent(id, componentValue, maxval, delta) {
@@ -239,6 +250,7 @@ var canvasObj = {
             this.shapes.push(newLine);
         }
 	this.clearCanvas();
+	
 	for (var i = 0; i < this.shapes.length; ++i) {
 	    this.shapes[i].draw();
 	}
