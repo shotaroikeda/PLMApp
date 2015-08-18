@@ -181,12 +181,12 @@ var canvasObj = {
 
         // Holds all shapes for tools or undo/redo
         this.drawables = [];
-	this.drawablesMarker = 0;
+	this.drawablesStart = 0;
+	this.drawablesEnd = 0;
 	
 	// Holds previous shapes for resetCanvas function
-	this.resetStack = [];
-	// Undo moves marker down 1, redo moves marker up 1
-	this.actionMarker = 0;
+	this.resetIndices = [0];
+	this.resetMarker = 0;
 
         // Initialize event listeners
         this.__initEvents__();
@@ -229,23 +229,47 @@ var canvasObj = {
 
     resetCanvas: function() {
 	this.clearCanvas();
-	this.actionStack.push(this.drawables.slice());
-	this.drawables.length = 0;
-	this.actionMarker++;
+	this.drawablesStart = this.drawables.length;
+	this.resetIndices.push(this.drawablesStart);
+	this.resetMarker++;
     },
 
     undo: function() {
-	if (this.drawablesMarker > 0) {
-	    this.drawablesMarker--;
+	//console.log("undo " + this.resetIndices.length)
+	if (this.drawablesEnd > this.drawablesStart) {
+	    console.log("end>start")
+	    this.drawablesEnd--;
+	    this.drawCanvas();
+	} else if (this.drawablesEnd === this.drawablesStart &&
+	    this.resetIndices.length > 1) {
+	    this.resetMarker--;
+	    this.drawablesStart = this.resetIndices[this.resetMarker];
 	    this.drawCanvas();
 	}
+	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
     },
 
     redo: function() {
-	if (this.drawablesMarker < this.drawables.length) {
-	    this.drawablesMarker++;
+	// TODO impliment binary search on resetIndices
+	// and cut points from addDrawable and resetCanvas (actions);
+	console.log("redo")
+	if ((this.resetMarker === this.resetIndices.length - 1 &&
+	     this.drawablesEnd < this.drawables.length) ||
+	     this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
+	    console.log("ran if")
+	    this.drawablesEnd++;
+	    this.drawCanvas();    
+	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
+	    this.drawablesStart = this.drawablesEnd;
+	    this.resetMarker++;
 	    this.drawCanvas();
+	    console.log("ran elif")
 	}
+	console.log("start: " + this.drawablesStart +
+		    " end: " + this.drawablesEnd +
+		    " mark+ " + this.resetIndices[this.resetMarker+1]);
+	/*else if (this.drawabkesMarker === this.drawables.length &&
+		   this.resetStack)*/
     },
 
     /*
@@ -269,20 +293,20 @@ var canvasObj = {
     
     drawCanvas: function() {
         this.clearCanvas();
-        for (var i = 0; i < this.drawablesMarker; ++i)
+        for (var i = this.drawablesStart; i < this.drawablesEnd; ++i)
             this.drawables[i].draw();
     },
 
     addDrawable: function(d) {
-	if (this.drawablesMarker !== this.drawables.length) {
-	    this.drawables.length = this.drawablesMarker;
+	if (this.drawablesEnd !== this.drawables.length) {
+	    this.drawables.length = this.drawablesEnd;
 	}
 	this.drawables.push(d);
 	
 	//if (this.drawables.length === 1)
 	//    return;
 	//else
-	this.drawablesMarker++;
+	this.drawablesEnd++;
 	
 	
     },
