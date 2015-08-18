@@ -180,10 +180,11 @@ var canvasObj = {
         ];
 
         // Holds all shapes for tools or undo/redo
-        this.shapes = [];
-
+        this.drawables = [];
+	this.drawablesMarker = 0;
+	
 	// Holds previous shapes for resetCanvas function
-	this.actionStack = [];
+	this.resetStack = [];
 	// Undo moves marker down 1, redo moves marker up 1
 	this.actionMarker = 0;
 
@@ -228,18 +229,23 @@ var canvasObj = {
 
     resetCanvas: function() {
 	this.clearCanvas();
-	this.reset.push(this.shapes.slice());
-	this.shapes.length = 0;
-
-	console.log(this.reset[this.reset.length-1]);
+	this.actionStack.push(this.drawables.slice());
+	this.drawables.length = 0;
+	this.actionMarker++;
     },
 
     undo: function() {
-
+	if (this.drawablesMarker > 0) {
+	    this.drawablesMarker--;
+	    this.drawCanvas();
+	}
     },
 
     redo: function() {
-
+	if (this.drawablesMarker < this.drawables.length) {
+	    this.drawablesMarker++;
+	    this.drawCanvas();
+	}
     },
 
     /*
@@ -263,19 +269,33 @@ var canvasObj = {
     
     drawCanvas: function() {
         this.clearCanvas();
-        for (var i = 0; i < this.shapes.length; ++i)
-            this.shapes[i].draw();
-    }
+        for (var i = 0; i < this.drawablesMarker; ++i)
+            this.drawables[i].draw();
+    },
+
+    addDrawable: function(d) {
+	if (this.drawablesMarker !== this.drawables.length) {
+	    this.drawables.length = this.drawablesMarker;
+	}
+	this.drawables.push(d);
+	
+	//if (this.drawables.length === 1)
+	//    return;
+	//else
+	this.drawablesMarker++;
+	
+	
+    },
 
     drawLine: function(x, y, drag) {
-        if (drag && this.shapes.length-1 >= 0) {
-            var currLine = this.shapes[this.shapes.length-1];
+        if (drag && this.drawables.length-1 >= 0) {
+            var currLine = this.drawables[this.drawables.length-1];
             currLine.addPoint(x,y);
         } else {
             var newLine = new Line(this.contextDOM);
             newLine.addPoint(x,y);
             newLine.addPoint(x-1, y);
-            this.shapes.push(newLine);
+            this.addDrawable(newLine);
         }
         this.drawCanvas();
     },
@@ -451,7 +471,7 @@ function _addButtonEvents() {
     $('#size').focusout(function() {
         $('#size').val(canvasObj.contextDOM.lineWidth);
     });
-
+``
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
