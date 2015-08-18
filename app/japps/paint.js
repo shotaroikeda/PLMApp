@@ -54,11 +54,11 @@ function Drawable(dom) {
 Drawable.prototype = {
     draw: function() {
     },
-    
+
     addPoint: function(x,y) {
-	this.points.push(new Point(x,y));
+        this.points.push(new Point(x,y));
     }
-    
+
 };
 
 /*** Line class ***/
@@ -71,30 +71,29 @@ function Line(dom) {
     this.size = dom.lineWidth;
     this.color = dom.strokeStyle;
     this.style = dom.lineJoin;
-    
+
 };
 // Line extends Drawable; properties as second argument
 Line.prototype = _extend( Drawable, {
     // Methods including overriden ones
-
     // @Override
     draw: function() {
         if (this.points.length === 0) return;
-	
-	this.dom.strokeStyle = this.color;
-	this.dom.lineWidth = this.size;
-	this.dom.lineJoin = this.style;
-	this.dom.lineCap = this.style;
+
+        this.dom.strokeStyle = this.color;
+        this.dom.lineWidth = this.size;
+        this.dom.lineJoin = this.style;
+        this.dom.lineCap = this.style;
         this.dom.beginPath();
         //this.dom.moveTo(this.points[0].x, this.points[0].y);
         for (var i = 1; i < this.points.length; ++i) {
-	    this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
+            this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
             this.dom.lineTo(this.points[i].x, this.points[i].y);
         }
         this.dom.closePath();
         this.dom.stroke();
     },
-    
+
 });
 
 /*** Color Component class ***/
@@ -180,8 +179,13 @@ var canvasObj = {
             new ColorComponent("#alpha", 1, 1, 0.1)
         ];
 
-        // Holds all shapes for undo and redo
+        // Holds all shapes for tools or undo/redo
         this.shapes = [];
+
+	// Holds previous shapes for resetCanvas function
+	this.actionStack = [];
+	// Undo moves marker down 1, redo moves marker up 1
+	this.actionMarker = 0;
 
         // Initialize event listeners
         this.__initEvents__();
@@ -218,43 +222,65 @@ var canvasObj = {
 
     clearCanvas: function() {
         this.contextDOM.clearRect(0, 0,
-                                  this.contextDOM.canvas.width, this.contextDOM.canvas.height);
+                                  this.contextDOM.canvas.width,
+				  this.contextDOM.canvas.height);
+    },
+
+    resetCanvas: function() {
+	this.clearCanvas();
+	this.reset.push(this.shapes.slice());
+	this.shapes.length = 0;
+
+	console.log(this.reset[this.reset.length-1]);
+    },
+
+    undo: function() {
+
+    },
+
+    redo: function() {
+
     },
 
     /*
-    old_draw: function(x, y, drag) {
-        this.contextDOM.beginPath();
+      old_draw: function(x, y, drag) {
+      this.contextDOM.beginPath();
 
-        if (drag) {
-            var prevX = this.__previous_coord__[0];
-            var prevY = this.__previous_coord__[1];
-            this.contextDOM.moveTo(prevX, prevY);
-        } else {
-            this.contextDOM.moveTo(x - 1, y);
-        }
-        this.__previous_coord__ = [x, y];
+      if (drag) {
+      var prevX = this.__previous_coord__[0];
+      var prevY = this.__previous_coord__[1];
+      this.contextDOM.moveTo(prevX, prevY);
+      } else {
+      this.contextDOM.moveTo(x - 1, y);
+      }
+      this.__previous_coord__ = [x, y];
 
-        this.contextDOM.lineTo(x, y);
-        this.contextDOM.closePath();
-        this.contextDOM.stroke();
-    },
+      this.contextDOM.lineTo(x, y);
+      this.contextDOM.closePath();
+      this.contextDOM.stroke();
+      },
     */
     
-    draw: function(x, y, drag) {
+    drawCanvas: function() {
+        this.clearCanvas();
+        for (var i = 0; i < this.shapes.length; ++i)
+            this.shapes[i].draw();
+    }
+
+    drawLine: function(x, y, drag) {
         if (drag && this.shapes.length-1 >= 0) {
-	    var currLine = this.shapes[this.shapes.length-1];
-	    currLine.addPoint(x,y);
+            var currLine = this.shapes[this.shapes.length-1];
+            currLine.addPoint(x,y);
         } else {
-	    var newLine = new Line(this.contextDOM);
-	    newLine.addPoint(x,y);
+            var newLine = new Line(this.contextDOM);
+            newLine.addPoint(x,y);
+            newLine.addPoint(x-1, y);
             this.shapes.push(newLine);
         }
-	this.clearCanvas();
-	
-	for (var i = 0; i < this.shapes.length; ++i) {
-	    this.shapes[i].draw();
-	}
+        this.drawCanvas();
     },
+
+
 
 };
 
@@ -298,10 +324,18 @@ function _addMouseEvents() {
     $('canvas').mousedown(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
+
+        switch(canvasObj.currentDrawMode) {
+        case PEN:
+        case ERASER:
             canvasObj.penDown = true;
-            canvasObj.draw(mouseX, mouseY, false);
-        } else if (canvasObj.currentDrawMode == BUCKET) {
+            canvasObj.drawLine(mouseX, mouseY, false);
+            break;
+        case BUCKET:
+            // MAKE THIS INTO ITS OWN FUNCTION!!!!!!!!
+
+
+            /**** BUCKET START ****/
             /* WARNING:
                Currently uses pixel by pixel filling which is apparently slower vs filling in a
                rectangle of a larger area.
@@ -339,19 +373,15 @@ function _addMouseEvents() {
                     if (canvasObj.contextDOM.canvas.width >= (curr_x+1)) {
                         queue.push([curr_x+1, curr_y]);
                     }
-
                     if (canvasObj.contextDOM.canvas.height >= (curr_y+1)) {
                         queue.push([curr_x, curr_y+1]);
                     }
-
                     if ((curr_x-1) >= 0) {
                         queue.push([curr_x-1, curr_y]);
                     }
-
                     if ((curr_y-1) >= 0) {
                         queue.push([curr_x, curr_y-1]);
                     }
-
                     current_pixel_data.data[RED] = fill_color[RED];
                     current_pixel_data.data[GREEN] = fill_color[GREEN];
                     current_pixel_data.data[BLUE] = fill_color[BLUE];
@@ -362,15 +392,26 @@ function _addMouseEvents() {
                     // right now it's so inefficent it crashes
                 }
             }
-        }});
+	    break;
+            /**** BUCKET END ****/
+	default:
+	    break;
+        }
+    });
 
     $('canvas').mousemove(function(e) {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
-        if((canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) &&
-           canvasObj.penDown) {
-            canvasObj.draw(mouseX, mouseY, true);
-        }
+	switch(canvasObj.currentDrawMode) {
+	case PEN:
+	case ERASER:
+	    if (canvasObj.penDown) {
+		canvasObj.drawLine(mouseX, mouseY, true);
+	    }
+	    break;
+	default:
+	    break;
+	}
     });
 
     $('canvas').mouseup(function(e) {
@@ -392,7 +433,7 @@ function _addMouseEvents() {
 function _addButtonEvents() {
     // Clear canvas
     $('#cls').click(function () {
-        canvasObj.clearCanvas();
+        canvasObj.resetCanvas();
     });
 
     // Brush size events
@@ -437,11 +478,13 @@ function _addButtonEvents() {
     });
 
     $('#undo').click(function() {
-        //TODO implement me
+        //WIP
+	canvasObj.undo();
     });
 
     $('#redo').click(function() {
-        //TODO implement me
+        //WIP
+	canvasObj.redo();
     });
 };
 
