@@ -465,6 +465,11 @@ var canvasObj = {
 	    this.redoStack.push(this.drawables[this.drawables.length - 1]);
 	    this.drawables.pop();
 	    this.drawCanvas();
+	    _enablePseudoButton($('#redo'));
+	}
+
+	if (this.drawables.length == 0) {
+	    _disablePseudoButton($('#undo'));
 	}
     },
 
@@ -473,6 +478,11 @@ var canvasObj = {
 	    this.drawables.push(this.redoStack[this.redoStack.length - 1]);
 	    this.redoStack.pop();
 	    this.drawCanvas();
+	    _enablePseudoButton($('#undo'));
+	}
+
+	if (this.redoStack.length == 0) {
+	    _disablePseudoButton($('#redo'));
 	}
     },
     
@@ -486,7 +496,9 @@ var canvasObj = {
 	this.drawables.push(d);
 	if (this.redoStack.length > 0) {
 	    this.redoStack.length = 0;
+	    _disablePseudoButton($('#redo'));
 	}
+	_enablePseudoButton($('#undo'));
     },
 
     drawLine: function(x, y, drag) {
@@ -517,6 +529,15 @@ var canvasObj = {
     },
 
 };
+
+function _disablePseudoButton(JqueryObj) {
+    JqueryObj.removeClass('btn-enabled');
+    JqueryObj.addClass('btn-disabled');
+};
+function _enablePseudoButton(JqueryObj) {
+    JqueryObj.addClass('btn-enabled');
+    JqueryObj.removeClass('btn-disabled');
+}
 
 function _addColorEvents(color) {
     // pass by constant ex: RED, GREEN, BLUE, ALPHA
@@ -697,4 +718,8 @@ function _addButtonEvents() {
 // startup functions
 $(document).ready(function () {
     canvasObj.__constructor__();
+
+    // disable both buttons because there's nothing there
+    _disablePseudoButton($('#undo'));
+    _disablePseudoButton($('#redo'));
 });

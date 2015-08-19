@@ -131,6 +131,17 @@ input {
     background-color:#0c4fcb;
 }
 
+.btn-disabled {
+    background-color: grey;
+}
+
+.btn-disabled:hover {
+    background-color: grey;
+}
+
+.btn-enabled {
+    background-color: #333;
+}
 
 /* side bar Credit formatting */
 #credits {
