@@ -23,6 +23,8 @@ const ALPHA = 3;
 const PEN = 0;
 const ERASER = 1;
 const BUCKET = 2;
+const RECT = 3;
+const RECTFILL = 4;
 
 /*** Local Inheritance function ***/
 // First argument is parent class, second is properties to add on
@@ -36,14 +38,17 @@ function _extend(parent, properties) {
 
 /*** Point class ***/
 function Point(x, y) { // Constructor with default variables
-    this.x = x;
-    this.y = y;
+    this.x = x !== 'undefined' ? x : 0;
+    this.y = y !== 'undefined' ? y : 0;
 };
 Point.prototype = { // Methods
     setPoint: function(x, y) {
         this.x = x;
         this.y = y;
-    }
+    },
+    toString: function() {
+	return ('(' + this.x + ', ' + this.y + ')');
+    },
 };
 
 /*** Drawable base class ***/
@@ -75,26 +80,80 @@ function Line(dom) {
 };
 // Line extends Drawable; properties as second argument
 Line.prototype = _extend( Drawable, {
-    // Methods including overriden ones
+    // Methods
     // @Override
     draw: function() {
         if (this.points.length === 0) return;
-
+        this.dom.beginPath();
+	
         this.dom.strokeStyle = this.color;
         this.dom.lineWidth = this.size;
         this.dom.lineJoin = this.style;
         this.dom.lineCap = this.style;
-        this.dom.beginPath();
-        //this.dom.moveTo(this.points[0].x, this.points[0].y);
+	
         for (var i = 1; i < this.points.length; ++i) {
             this.dom.moveTo(this.points[i-1].x,this.points[i-1].y)
             this.dom.lineTo(this.points[i].x, this.points[i].y);
         }
+	
         this.dom.closePath();
         this.dom.stroke();
     },
 
 });
+
+/*** Rectangle class ***/
+function Rectangle(dom, fill) {
+    Drawable.call(this, dom);
+
+    this.thickness = dom.lineWidth;
+    this.color = dom.strokeStyle;
+    // rename these 2 variables
+    this.style = "round"; //lineJoin
+    this.edges = "round"; //lineCap
+
+    this.fill = fill !== 'undefined' ? fill : false;
+    
+    this.start = new Point(0, 0);
+    this.end = new Point(0, 0);
+
+    this.width = 0;
+    this.height = 0;
+};
+
+Rectangle.prototype  = _extend( Drawable, {
+    // @Override
+    draw: function() {
+	this.dom.beginPath();
+	
+	this.dom.strokeStyle = this.color;
+	this.dom.lineWith = this.size;
+	this.dom.lineJoin = this.style;
+	this.dom.lineCap = this.edges;
+
+	if (!this.fill) {
+	    this.dom.rect(this.start.x, this.start.y,
+			  this.width, this.height);
+	} else {
+	    this.dom.fillRect(this.start.x, this.start.y,
+			      this.width, this.height);
+	}
+	this.dom.stroke();
+	this.dom.closePath();
+    },
+
+    setStart: function(x,y) {
+	this.start.setPoint(x,y);
+    },
+    setEnd: function(x,y) {
+	this.end.setPoint(x,y);
+	this.width = this.end.x - this.start.x;
+	this.height = this.end.y - this.start.y;
+    },
+
+});
+
+
 
 /*** Color Component class ***/
 // Constructor
@@ -428,12 +487,10 @@ var canvasObj = {
 	if (this.redoStack.length > 0) {
 	    this.redoStack.length = 0;
 	}
-	
-	
     },
 
     drawLine: function(x, y, drag) {
-        if (drag && this.drawables.length-1 >= 0) {
+        if (drag && this.drawables.length >= 1) {
             var currLine = this.drawables[this.drawables.length-1];
             currLine.addPoint(x,y);
         } else {
@@ -445,7 +502,19 @@ var canvasObj = {
         this.drawCanvas();
     },
 
-
+    drawRect: function(x, y, drag, fill) {
+	if (drag && this.drawables.length >= 1) {
+	    var currRect = this.drawables[this.drawables.length-1];
+	    currRect.setEnd(x,y);
+	} else {
+	    var newRect = new Rectangle(this.contextDOM, fill);
+	    newRect.setStart(x,y);
+	    newRect.setEnd(x,y);
+	    this.addDrawable(newRect);
+	    console.log(this.drawables);
+	}
+	this.drawCanvas();
+    },
 
 };
 
@@ -498,6 +567,14 @@ function _addMouseEvents() {
         case BUCKET:
             canvasObj.fill(mouseX, mouseY);
     	    break;
+	case RECT:
+	    canvasObj.penDown = true;
+	    canvasObj.drawRect(mouseX, mouseY, false, false);
+	    break;
+	case RECTFILL:
+	    canvasObj.penDown = true;
+	    canvasObj.drawRect(mouseX, mouseY, false, true);
+	    break;
     	default:
 	       break;
         }
@@ -513,6 +590,14 @@ function _addMouseEvents() {
 		canvasObj.drawLine(mouseX, mouseY, true);
 	    }
 	    break;
+	case RECT:
+	    if (canvasObj.penDown) {
+		canvasObj.drawRect(mouseX, mouseY, true, false);
+	    }
+	case RECTFILL:
+	    if (canvasObj.penDown) {
+		canvasObj.drawRect(mouseX, mouseY, true, true);
+	    }
 	default:
 	    break;
 	}
@@ -579,6 +664,23 @@ function _addButtonEvents() {
 
         $('.tool-active').removeClass('tool-active');
         $('#bucket').addClass('tool-active');
+    });
+
+    // Shapes
+    $('#rect').click(function() {
+	canvasObj.applyRGBA();
+	canvasObj.currentDrawMode = RECT;
+
+        $('.tool-active').removeClass('tool-active');
+        $('#rect').addClass('tool-active');
+    });
+
+    $('#rectFill').click(function() {
+	canvasObj.applyRGBA();
+	canvasObj.currentDrawMode = RECTFILL;
+
+        $('.tool-active').removeClass('tool-active');
+        $('#rectFill').addClass('tool-active');
     });
 
     $('#undo').click(function() {
