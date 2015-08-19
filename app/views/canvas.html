@@ -1,0 +1,123 @@
+<div id="canvas">
+  <!-- Canvas Toolbar -->
+  <div id="canvas-toolbar" class="container-fluid col-md-2 sidebar">
+    <!--
+    At the current development process, the values are limited through
+    javascript. However, it still shows up to the user as whatever they put in (i.e.
+    says "Potato" for the Size instead of changing it to the automatic default 1)
+    We might need to use AngularJS to fix this later, or use javascript to change the text
+    -->
+    <div class="row inputbox">
+      <span class="toolbar-desc col-md-4">Size:</span>
+      <div class="col-md-2">
+        <span class="input-group input-group-sm" id="brush-size">
+          <span class="input-group-btn" id="size-minus">
+            <button class="btn brush-form-input" type="button">-</button>
+          </span>
+          <input type="text" class="form-control" id="size" value ="5">
+          <span class="input-group-btn" id="size-plus">
+            <button class="btn brush-form-input" type="button">+</button>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="row inputbox">
+      <span class="toolbar-desc col-md-4">R:</span>
+      <div class="col-md-2">
+        <span class="input-group input-group-sm">
+          <span class="input-group-btn" id="red-minus">
+            <button class="btn brush-form-input" type="button">-</button>
+          </span>
+          <input type="text" class="form-control" id="red" value="0">
+          <span class="input-group-btn" id="red-plus">
+            <button class="btn brush-form-input" type="button">+</button>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class ="row inputbox">
+      <span class="toolbar-desc col-md-4">G:</span>
+      <div class="col-md-2">
+        <span class="input-group input-group-sm">
+          <span class="input-group-btn" id="green-minus">
+            <button class="btn brush-form-input" type="button">-</button>
+          </span>
+          <input type="text" class="form-control" id="green" value="0">
+          <span class="input-group-btn" id="green-plus">
+            <button class="btn brush-form-input" type="button">+</button>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="row inputbox">
+      <span class="toolbar-desc col-md-4">B:</span>
+      <div class="col-md-2">
+        <span class="input-group input-group-sm">
+          <span class="input-group-btn" id="blue-minus">
+            <button class="btn brush-form-input" type="button">-</button>
+          </span>
+          <input type="text" class="form-control" id="blue" value="0">
+          <span class="input-group-btn" id="blue-plus">
+            <button class="btn brush-form-input" type="button">+</button>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="row inputbox">
+      <span class="toolbar-desc col-md-4">A:</span>
+      <div class="col-md-2">
+        <span class="input-group input-group-sm">
+          <span class="input-group-btn" id="alpha-minus">
+            <button class="btn brush-form-input" type="button">-</button>
+          </span>
+          <input type="text" class="form-control brush-form-input" id="alpha" value="1">
+          <span class="input-group-btn" id="alpha-plus">
+            <button class="btn btn-default brush-form-input" type="button">+</button>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-12" id="fancy-color-preview" style="background-color:black;">
+    </div>
+    <div id="toolbar-brushes" class="row col-md-12">
+      <div class="icon-row btn-group">
+        <div id="pen" class="brush-form-input btn tool-active">
+          <img src="images/pen.png">
+        </div>
+        <div id="eraser" class="brush-form-input btn">
+          <img src="images/eraser.png">
+        </div>
+        <div id="bucket" class="brush-form-input btn">
+          <img src="images/bucket.png">
+        </div>
+      </div>
+      <div class="icon-row btn-group">
+        <div id="rect" class="brush-form-input btn">
+          <img src="images/rect.png">
+        </div>
+        <div id="rectFill" class="brush-form-input btn">
+          <img src="images/rectFill.png">
+        </div>
+      </div>
+      <div class="icon-row btn-group">
+        <div id="undo" class="brush-form-input btn">
+          <img src="images/undo.png">
+        </div>
+        <div id="redo" class="brush-form-input btn">
+          <img src="images/redo.png">
+        </div>
+        <div id="cls" class="brush-form-input btn">
+          <img src="images/clear.png">
+        </div>
+      </div>
+    </div>
+
+    <div id="credits">
+      Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>
+    </div>
+  </div>
+  <div class="canvas col-md-offset-2">
+    <canvas id="mainCanvas"></canvas>
+  </div>
+</div>
