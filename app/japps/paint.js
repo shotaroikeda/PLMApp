@@ -111,7 +111,7 @@ function ColorComponent(id, componentValue, maxval, delta) {
 ColorComponent.prototype = {
     // Changes component value by a +1 or -1
     changeValue: function(change) {
-        this.componentValue = Math.round((this.componentValue+change)*100)/100;
+        this.componentValue = Math.round((this.componentValue + change) * 100) / 100;
         if (this.componentValue < 0)
             this.componentValue = 0;
         else if (this.componentValue > this.maxval)
@@ -224,52 +224,224 @@ var canvasObj = {
     clearCanvas: function() {
         this.contextDOM.clearRect(0, 0,
                                   this.contextDOM.canvas.width,
-				  this.contextDOM.canvas.height);
+				                  this.contextDOM.canvas.height);
+    },
+
+    draw: function(x, y, drag) {
+        if (drag && this.shapes.length-1 >= 0) {
+            var currLine = this.shapes[this.shapes.length-1];
+            currLine.addPoint(x,y);
+        } else {
+            var newLine = new Line(this.contextDOM);
+            newLine.addPoint(x,y);
+            this.shapes.push(newLine);
+        }
+        this.clearCanvas();
+        for (var i = 0; i < this.shapes.length; ++i) {
+            this.shapes[i].draw();
+        }
+    },
+
+    //simulates paint bucket tool and fills pixels with certain threshold
+    fill: function(mousex, mousey) {
+        //obtain image metadata
+        var dim = [this.contextDOM.canvas.width, this.contextDOM.canvas.height];
+        var imgdata = this.contextDOM.getImageData(0, 0, dim[0], dim[1]);
+
+        //color to fill
+        var fill_color = [];
+        for (var i = RED; i <= ALPHA; i++) {
+            fill_color.push(this.colorComponents[i].componentValue);
+        }
+        fill_color[3] *= 255;
+
+        console.log("Fill color: " + fill_color);
+
+        var data_coord = this.convert_coordinate_space(mousex, mousey);
+        var start_color = this.get_rgba(data_coord, imgdata);
+
+        console.log("Start color: " + start_color);
+
+        //10% error
+        var threshold = 30;
+
+        var queue = [[mousex, mousey]];
+
+        while (queue.length > 0) {
+            var current_coord = queue.shift();
+            var x = current_coord[0];
+            var y = current_coord[1];
+
+            //FIXME
+            //this should be a bug considering we run --x first, data_coord should reflect that change too by
+            //doing data_corod -= 4 after we set it above on currently line 241, but it causes a crash
+            data_coord = this.convert_coordinate_space(x, y) - 4;
+            //shift far left
+            while (this.inbound(--x, y) && this.within_threshold(start_color, this.get_rgba(data_coord, imgdata), threshold)) {
+                data_coord -= 4;
+            }
+            //shift back
+            data_coord += 4;
+            x++;
+
+            while (this.inbound(x++, y) && this.within_threshold(start_color, this.get_rgba(data_coord, imgdata), threshold)) {
+                //color pixel
+                this.set_rgba(data_coord, fill_color, imgdata);
+
+                var delta = [-1, 1];
+                //keep track of if we checked above/below to add or not add pixel to the queue
+                var checked = [false, false];
+                for (var delta_counter = 0; delta_counter < 2; delta_counter++) {
+                    if (this.inbound(x, y + delta[delta_counter])) {
+                        if (this.within_threshold(start_color, this.get_rgba(data_coord + delta[delta_counter] * 4 * dim[1], imgdata), threshold)) {
+                            if (!checked[delta_counter]) {
+                                queue.push([x, y + delta[delta_counter]]);
+                                checked[delta_counter] = true;
+                            }
+                        } else {
+                            checked[delta_counter] = false;
+                        }
+                    }
+                }
+
+                //shift data coordinate by 4
+                data_coord += 4;
+            }
+        }
+        this.contextDOM.putImageData(imgdata, 0, 0);
+        console.log("Filled");
+    },
+
+    inbound: function(x, y) {
+        if (x < 0 || y < 0) return false;
+        return x < this.contextDOM.canvas.width && y < this.contextDOM.canvas.height;
+    },
+
+    get_rgba: function(data_coord, imgdata) {
+        var color = [];
+        for (var i = 0; i < 4; i++) {
+            color.push(imgdata.data[data_coord + i]);
+        }
+        return color;
+    },
+
+    set_rgba: function(data_coord, fill_color, imgdata) {
+        for (var i = 0; i < 4; i++) {
+            imgdata.data[data_coord + i] = fill_color[i];
+        }
+    },
+
+    /*
+        @return
+            returns the index of the coordinate when converted from a 2d space to a 1d space
+    */
+    convert_coordinate_space: function(x, y) {
+        return (x + y * this.contextDOM.canvas.width) * 4;
+    },
+
+    //checks if 2 colors are similar enough within a certain percentage
+    within_threshold: function(color1, color2, threshold) {
+        var lab1 = this.xyz_to_lab(this.rgb_to_xyz(color1));
+        var lab2 = this.xyz_to_lab(this.rgb_to_xyz(color2));
+
+        return this.deltae(lab1, lab2) <= threshold;
+    },
+
+    //Convert colorspace RGB to XYZ
+    rgb_to_xyz: function(rgb) {
+        for (var i = RED; i <= BLUE; i++) {
+            rgb[i] /= 255;
+
+            if (rgb[i] > 0.04045) {
+                rgb[i] = Math.pow((rgb[i] + 0.055) / 1.055, 2.4);
+            } else {
+                rgb[i] /= 12.92;
+            }
+            rgb[i] *= 100;
+        }
+
+        x = rgb[RED] * 0.4124 + rgb[GREEN] * 0.3576 + rgb[BLUE] * 0.1805;
+        y = rgb[RED] * 0.2126 + rgb[GREEN] * 0.7152 + rgb[BLUE] * 0.0722;
+        z = rgb[RED] * 0.0193 + rgb[GREEN] * 0.1192 + rgb[BLUE] * 0.9505;
+
+        return [x, y, z];
+    },
+
+    //convert colorspace XYZ to CIE-L*ab
+    xyz_to_lab: function(xyz) {
+        xyz[0] /= 95.047;
+        xyz[1] /= 100.000;
+        xyz[2] /= 108.883;
+
+        for (var i = 0; i <= 3; i++) {
+            if (xyz[i] > 0.008856) {
+                xyz[i] = Math.pow(xyz[i], 1 / 3);
+            } else {
+                xyz[i] = (7.787 * xyz[i]) + (16 / 116);
+            }
+        }
+
+        l = (116 * xyz[1]) - 16;
+        a = 500 * (xyz[0] - xyz[1]);
+        b = 200 * (xyz[1] - xyz[2]);
+
+        return [l, a, b];
+    },
+
+    //calculate deltaE between two CIE-L*ab colorspace values
+    deltae: function(lab1, lab2) {
+        dl = lab2[0] - lab1[0];
+        da = lab2[1] - lab1[1];
+        db = lab2[2] - lab1[2];
+
+        var e = Math.sqrt(dl * dl + da * da + db * db);
+        //console.log("E: " + e); //DEBUG
+        return e;
     },
 
     resetCanvas: function() {
-	this.clearCanvas();
-	this.drawablesStart = this.drawables.length;
-	this.resetIndices.push(this.drawablesStart);
-	this.resetMarker++;
+        this.clearCanvas();
+        this.drawablesStart = this.drawables.length;
+        this.resetIndices.push(this.drawablesStart);
+        this.resetMarker++;
     },
 
     undo: function() {
-	//console.log("undo " + this.resetIndices.length)
-	if (this.drawablesEnd > this.drawablesStart) {
-	    console.log("end>start")
-	    this.drawablesEnd--;
-	    this.drawCanvas();
-	} else if (this.drawablesEnd === this.drawablesStart &&
-	    this.resetIndices.length > 1) {
-	    this.resetMarker--;
-	    this.drawablesStart = this.resetIndices[this.resetMarker];
-	    this.drawCanvas();
-	}
-	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
+    	//console.log("undo " + this.resetIndices.length)
+    	if (this.drawablesEnd > this.drawablesStart) {
+    	    console.log("end>start")
+    	    this.drawablesEnd--;
+    	    this.drawCanvas();
+    	} else if (this.drawablesEnd === this.drawablesStart &&
+    	    this.resetIndices.length > 1) {
+    	    this.resetMarker--;
+    	    this.drawablesStart = this.resetIndices[this.resetMarker];
+    	    this.drawCanvas();
+    	}
+    	console.log("UNDO: " + this.drawablesStart + " and end " + this.drawablesEnd);
     },
 
     redo: function() {
-	// TODO impliment binary search on resetIndices
-	// and cut points from addDrawable and resetCanvas (actions);
-	console.log("redo")
-	if ((this.resetMarker === this.resetIndices.length - 1 &&
-	     this.drawablesEnd < this.drawables.length) ||
-	     this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
-	    console.log("ran if")
-	    this.drawablesEnd++;
-	    this.drawCanvas();    
-	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
-	    this.drawablesStart = this.drawablesEnd;
-	    this.resetMarker++;
-	    this.drawCanvas();
-	    console.log("ran elif")
-	}
-	console.log("start: " + this.drawablesStart +
-		    " end: " + this.drawablesEnd +
-		    " mark+ " + this.resetIndices[this.resetMarker+1]);
-	/*else if (this.drawabkesMarker === this.drawables.length &&
-		   this.resetStack)*/
+    	// TODO impliment binary search on resetIndices
+    	// and cut points from addDrawable and resetCanvas (actions);
+    	console.log("redo")
+    	if ((this.resetMarker === this.resetIndices.length - 1 &&
+            this.drawablesEnd < this.drawables.length) ||
+            this.drawablesEnd < this.resetIndices[this.resetMarker + 1]) {
+    	    console.log("ran if")
+    	    this.drawablesEnd++;
+    	    this.drawCanvas();    
+    	} else if (this.resetIndices[this.resetMarker + 1] === this.drawablesEnd) {
+    	    this.drawablesStart = this.drawablesEnd;
+    	    this.resetMarker++;
+    	    this.drawCanvas();
+    	    console.log("ran elif")
+    	}
+    	console.log("start: " + this.drawablesStart +
+    		    " end: " + this.drawablesEnd +
+    		    " mark+ " + this.resetIndices[this.resetMarker+1]);
+    	/*else if (this.drawabkesMarker === this.drawables.length &&
+    		   this.resetStack)*/
     },
 
     /*
@@ -371,70 +543,10 @@ function _addMouseEvents() {
             canvasObj.drawLine(mouseX, mouseY, false);
             break;
         case BUCKET:
-            // MAKE THIS INTO ITS OWN FUNCTION!!!!!!!!
-
-
-            /**** BUCKET START ****/
-            /* WARNING:
-               Currently uses pixel by pixel filling which is apparently slower vs filling in a
-               rectangle of a larger area.
-
-               There is definitely room for opimization here.
-
-               Right now this list is in order of percent of time taken of operation
-               (ie. biggest bottlenecks)
-
-               1. The queue is filled up very quickly. Might want to check for adjacent pixels
-               before checking instead of vice versa (current implementation)
-
-               2. fillRect() is slow. however it seems like putImageData() does not work(?)
-               obtaining pixel data for point is inefficent as it creates the whole object rather than
-               just pixel data.
-
-               3. Implementation itself might not be that great. See https://en.wikipedia.org/wiki/Flood_fill
-               for more ideas (right now this uses most simple one)
-            */
-            queue = [];
-            queue.push([mouseX, mouseY]);
-            pointer_pixel_data = canvasObj.contextDOM.getImageData(mouseX, mouseY, 1, 1);
-            fill_color = [parseInt($('#red')[0].value), parseInt($('#green')[0].value),
-                          parseInt($('#blue')[0].value), parseInt($('#alpha')[0].value)];
-
-            while (queue.length > 0) {
-                current_point = queue.shift();
-                current_pixel_data = canvasObj.contextDOM.
-                    getImageData(current_point[0], current_point[1], 1, 1);
-
-                if (arrayColorCompare(current_pixel_data.data, pointer_pixel_data.data)) {
-                    // Add ajacent pixels to queue, check later
-                    curr_x = current_point[0];
-                    curr_y = current_point[1];
-                    if (canvasObj.contextDOM.canvas.width >= (curr_x+1)) {
-                        queue.push([curr_x+1, curr_y]);
-                    }
-                    if (canvasObj.contextDOM.canvas.height >= (curr_y+1)) {
-                        queue.push([curr_x, curr_y+1]);
-                    }
-                    if ((curr_x-1) >= 0) {
-                        queue.push([curr_x-1, curr_y]);
-                    }
-                    if ((curr_y-1) >= 0) {
-                        queue.push([curr_x, curr_y-1]);
-                    }
-                    current_pixel_data.data[RED] = fill_color[RED];
-                    current_pixel_data.data[GREEN] = fill_color[GREEN];
-                    current_pixel_data.data[BLUE] = fill_color[BLUE];
-                    current_pixel_data.data[ALPHA] = fill_color[ALPHA];
-
-                    canvasObj.contextDOM.fillRect(curr_x, curr_y, 1, 1);
-                    //TODO finish me
-                    // right now it's so inefficent it crashes
-                }
-            }
-	    break;
-            /**** BUCKET END ****/
-	default:
-	    break;
+            canvasObj.fill(mouseX, mouseY);
+    	    break;
+    	default:
+	       break;
         }
     });
 
@@ -490,7 +602,7 @@ function _addButtonEvents() {
     $('#size').focusout(function() {
         $('#size').val(canvasObj.contextDOM.lineWidth);
     });
-``
+
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
@@ -526,60 +638,6 @@ function _addButtonEvents() {
 	canvasObj.redo();
     });
 };
-
-
-//Convert colorspace RGB to XYZ
-function rgb_to_xyz(rgb) {
-    for (var i = RED; i <= BLUE; i++) {
-        if (rgb[i] > 0.04045) {
-            rgb[i] = Math.pow((rgb[i] + 0.055) / 1.055, 2.4);
-        } else {
-            rgb[i] /= 12.92;
-        }
-        rgb[i] *= 100;
-    }
-
-    x = rgb[RED] * 0.4124 + rgb[GREEN] * 0.3576 + rgb[BLUE] * 0.1805;
-    y = rgb[RED] * 0.2126 + rgb[GREEN] * 0.7152 + rgb[BLUE] * 0.0722;
-    z = rgb[RED] * 0.0193 + rgb[GREEN] * 0.1192 + rgb[BLUE] * 0.9505;
-
-    return [x, y, z];
-}
-
-//convert colorspace XYZ to CIE-L*ab
-function xyz_to_lab(xyz) {
-    xyz[0] /= 95.047;
-    xyz[1] /= 100.000;
-    xyz[2] /= 108.883;
-
-    for (var i = 0; i <= 3; i++) {
-        if (xyz[i] > 0.008856) {
-            xyz[i] = Math.pow(xyz[i], 1 / 3);
-        } else {
-            xyz[i] = (7.787 * xyz[i]) + (16 / 116);
-        }
-    }
-
-    l = (116 * xyz[1]) - 16;
-    a = 500 * (xyz[0] - xyz[1]);
-    b = 200 * (xyz[1] - xyz[2]);
-
-    return [l, a, b];
-}
-
-//calculate deltaE between two CIE-L*ab colorspace values
-function deltae(lab1, lab2) {
-    dl = lab1[0] - lab2[0];
-    da = lab1[1] - lab2[1];
-    db = lab1[2] - lab2[2];
-
-    return Math.sqrt(dl * dl + da * da + db * db);
-}
-
-//returns a decimal between 0 and 1 calculating the percent error between two numerical values
-function calc_error(accepted, measured) {
-    return (accepted - measured) / accepted;
-}
 
 // startup functions
 $(document).ready(function () {
