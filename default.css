@@ -1,0 +1,24 @@
+/*
+Color palette here:
+http://www.colourlovers.com/palette/3670689/American_Typewriter
+*/
+
+.jumbotron {
+    background-color: #E24C55;
+}
+
+.jumbotron > h1 {
+    color: black;
+}
+
+.jumbotron > p {
+    color: black;
+}
+
+body {
+    background-color: #BBC9C9;
+}
+
+.changelog {
+    background-color: #FBFBF3;
+}
