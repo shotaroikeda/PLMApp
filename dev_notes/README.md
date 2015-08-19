@@ -114,7 +114,15 @@ Some thoughts:
 
 # Other References #
 
+## General HTML ##
+
 1. [Free Icons](http://www.flaticon.com/)
 2. [Very Good WebAPI documentation (js, css, html, etc.)](https://developer.mozilla.org/en-US/)
+
+## Running AngularJS locally ##
+1. [Get Node.js](https://nodejs.org/download/)
+2. Run ```sudo npm http-server -g``` to install http-server
+3. Browse to ```/path/to/PLMApp/app/```
+4. Run ```http-server ./```
 
 [back to top](#table-of-contents)
