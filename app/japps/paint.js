@@ -302,10 +302,6 @@ var canvasObj = {
 	    this.drawables.length = this.drawablesEnd;
 	}
 	this.drawables.push(d);
-	
-	//if (this.drawables.length === 1)
-	//    return;
-	//else
 	this.drawablesEnd++;
 	
 	
@@ -359,7 +355,6 @@ function arrayColorCompare(arr1, arr2) {
             return false;
         }
     }
-
     return true;
 }
 
