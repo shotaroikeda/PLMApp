@@ -35,4 +35,4 @@ app.config(function ($routeProvider) {
 	.otherwise({
 	    redirectTo: '/canvas' // Point to most recent section of development for convenience.
 	})
-})
+});
