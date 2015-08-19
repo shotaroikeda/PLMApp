@@ -98,11 +98,11 @@ input {
 }
 
 .brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
-    background-color: #444444;
-    border-style:none;
-    color: #cccccc;
-    outline: none !important;
-}
+                                                      background-color: #444444;
+                                                      border-style:none;
+                                                      color: #cccccc;
+                                                      outline: none !important;
+                                                  }
 
 .form-control {
     max-width: 50px;
