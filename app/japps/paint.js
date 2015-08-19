@@ -395,14 +395,18 @@ var canvasObj = {
 
     //checks if 2 colors are similar enough within a certain percentage
     within_threshold: function(color1, color2, threshold) {
-        var lab1 = this.xyz_to_lab(this.rgb_to_xyz(color1));
-        var lab2 = this.xyz_to_lab(this.rgb_to_xyz(color2));
+        var lab1 = this.xyz_to_lab(this.rgba_to_xyz(color1));
+        var lab2 = this.xyz_to_lab(this.rgba_to_xyz(color2));
 
         return this.deltae(lab1, lab2) <= threshold;
     },
 
     //Convert colorspace RGB to XYZ
-    rgb_to_xyz: function(rgb) {
+    rgba_to_xyz: function(rgba) {
+        //first convert rgba to rgb
+        var rgb = [(1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[RED],
+                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[GREEN],
+                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[BLUE]];
         for (var i = RED; i <= BLUE; i++) {
             rgb[i] /= 255;
 
