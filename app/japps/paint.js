@@ -126,15 +126,16 @@ Rectangle.prototype  = _extend( Drawable, {
     draw: function() {
 	this.dom.beginPath();
 	
-	this.dom.strokeStyle = this.color;
 	this.dom.lineWith = this.size;
 	this.dom.lineJoin = this.style;
 	this.dom.lineCap = this.edges;
 
 	if (!this.fill) {
+	    this.dom.strokeStyle = this.color;
 	    this.dom.rect(this.start.x, this.start.y,
 			  this.width, this.height);
 	} else {
+	    this.dom.fillStyle = this.color;
 	    this.dom.fillRect(this.start.x, this.start.y,
 			      this.width, this.height);
 	}
