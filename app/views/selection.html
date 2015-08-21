@@ -1,0 +1,20 @@
+<!-- Application CSS -->
+<link rel="stylesheet" href="css/selection.css">
+
+<div class="body-like">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4 cell-like" ng-repeat="panel in panels">
+        <a href="#">
+          <div class="card-like-panel">
+            <div class="one-panel">{{ panel.name | limitTo: 14 }}{{ panel.name.length > 15 ? '...':'' }}</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4 ">
+        <div class="card-like-panel add-panel">
+	  <div class="one-panel"> &plus; </div>
+	</div>
+      </div>
+    </div>
+  </div>
