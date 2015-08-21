@@ -282,21 +282,6 @@ var canvasObj = {
 				  this.contextDOM.canvas.height);
     },
 
-    draw: function(x, y, drag) {
-        if (drag && this.shapes.length-1 >= 0) {
-            var currLine = this.shapes[this.shapes.length-1];
-            currLine.addPoint(x,y);
-        } else {
-            var newLine = new Line(this.contextDOM);
-            newLine.addPoint(x,y);
-            this.shapes.push(newLine);
-        }
-        this.clearCanvas();
-        for (var i = 0; i < this.shapes.length; ++i) {
-            this.shapes[i].draw();
-        }
-    },
-
     //simulates paint bucket tool and fills pixels with certain threshold
     fill: function(mousex, mousey) {
         //obtain image metadata
