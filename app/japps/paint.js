@@ -15,10 +15,10 @@
 /*** CONSTANTS ***/
 // IE does not support constants, but we don't care about IE
 // Indexing canvasobj colorcomponents
-const RED = 0;
-const GREEN = 1;
-const BLUE = 2;
-const ALPHA = 3;
+const C_RED = 0;
+const C_GREEN = 1;
+const C_BLUE = 2;
+const C_ALPHA = 3;
 // Valid draw modes: pen, eraser, bucket
 const PEN = 0;
 const ERASER = 1;
@@ -248,10 +248,10 @@ var canvasObj = {
     },
 
     __initEvents__: function() {
-        _addColorEvents(RED);
-        _addColorEvents(GREEN);
-        _addColorEvents(BLUE);
-        _addColorEvents(ALPHA);
+        _addColorEvents(C_RED);
+        _addColorEvents(C_GREEN);
+        _addColorEvents(C_BLUE);
+        _addColorEvents(C_ALPHA);
         _addMouseEvents();
         _addButtonEvents();
     },
@@ -259,10 +259,10 @@ var canvasObj = {
     /* Public member functions */
     //Sets the color of the preview box to the currently selected RGBA value
     applyRGBA: function() {
-        this.setColor(this.colorComponents[RED].componentValue,
-                      this.colorComponents[GREEN].componentValue,
-                      this.colorComponents[BLUE].componentValue,
-                      this.colorComponents[ALPHA].componentValue);
+        this.setColor(this.colorComponents[C_RED].componentValue,
+                      this.colorComponents[C_GREEN].componentValue,
+                      this.colorComponents[C_BLUE].componentValue,
+                      this.colorComponents[C_ALPHA].componentValue);
         $('#fancy-color-preview')[0].style.backgroundColor = this.contextDOM.strokeStyle;
     },
 
@@ -305,7 +305,7 @@ var canvasObj = {
 
         //color to fill
         var fill_color = [];
-        for (var i = RED; i <= ALPHA; i++) {
+        for (var i = C_RED; i <= C_ALPHA; i++) {
             fill_color.push(this.colorComponents[i].componentValue);
         }
         fill_color[3] *= 255;
@@ -405,10 +405,10 @@ var canvasObj = {
     //Convert colorspace RGB to XYZ
     rgba_to_xyz: function(rgba) {
         //first convert rgba to rgb
-        var rgb = [(1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[RED],
-                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[GREEN],
-                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[BLUE]];
-        for (var i = RED; i <= BLUE; i++) {
+        var rgb = [(1 - rgba[C_ALPHA]) * 255 + rgba[C_ALPHA] * rgba[C_RED],
+                   (1 - rgba[C_ALPHA]) * 255 + rgba[C_ALPHA] * rgba[C_GREEN],
+                   (1 - rgba[C_ALPHA]) * 255 + rgba[C_ALPHA] * rgba[C_BLUE]];
+        for (var i = C_RED; i <= C_BLUE; i++) {
             rgb[i] /= 255;
 
             if (rgb[i] > 0.04045) {
@@ -419,9 +419,9 @@ var canvasObj = {
             rgb[i] *= 100;
         }
 
-        x = rgb[RED] * 0.4124 + rgb[GREEN] * 0.3576 + rgb[BLUE] * 0.1805;
-        y = rgb[RED] * 0.2126 + rgb[GREEN] * 0.7152 + rgb[BLUE] * 0.0722;
-        z = rgb[RED] * 0.0193 + rgb[GREEN] * 0.1192 + rgb[BLUE] * 0.9505;
+        x = rgb[C_RED] * 0.4124 + rgb[C_GREEN] * 0.3576 + rgb[C_BLUE] * 0.1805;
+        y = rgb[C_RED] * 0.2126 + rgb[C_GREEN] * 0.7152 + rgb[C_BLUE] * 0.0722;
+        z = rgb[C_RED] * 0.0193 + rgb[C_GREEN] * 0.1192 + rgb[C_BLUE] * 0.9505;
 
         return [x, y, z];
     },
@@ -545,7 +545,7 @@ function _enablePseudoButton(JqueryObj) {
 }
 
 function _addColorEvents(color) {
-    // pass by constant ex: RED, GREEN, BLUE, ALPHA
+    // pass by constant ex: C_RED, C_GREEN, C_BLUE, C_ALPHA
     var component = canvasObj.colorComponents[color];
     // Click + or - buttons
     $(component.minusId).on('click', function(){
