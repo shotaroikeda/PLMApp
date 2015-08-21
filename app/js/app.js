@@ -39,3 +39,14 @@ app.config(function ($routeProvider) {
             redirectTo: '/selection' // Point to most recent section of development for convenience.
         });
 });
+
+const _COLOR_RED = 0;
+const _COLOR_GREEN = 1;
+const _COLOR_BLUE = 2;
+const _COLOR_ALPHA = 3;
+
+const T_PEN = 0;
+const T_ERASER = 1;
+const T_BUCKET = 2;
+const T_RECT = 3;
+const T_RECTFILL = 4;
