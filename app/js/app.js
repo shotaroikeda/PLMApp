@@ -1,5 +1,5 @@
-var app = angular.module('PLMApp', ['ngRoute']);
-app.config(function ($routeProvider) {
+var app = angular.module('PLMApp', ['ngRoute', 'ngCookies']);
+app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
     /*
       add this when done
@@ -38,7 +38,12 @@ app.config(function ($routeProvider) {
         .otherwise({
             redirectTo: '/selection' // Point to most recent section of development for convenience.
         });
-});
+
+    $locationProvider.html5Mode({
+	enabled: true,
+	requireBase: false
+    });
+}]);
 
 const _COLOR_RED = 0;
 const _COLOR_GREEN = 1;
