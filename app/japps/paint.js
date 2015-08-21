@@ -15,16 +15,16 @@
 /*** CONSTANTS ***/
 // IE does not support constants, but we don't care about IE
 // Indexing canvasobj colorcomponents
-const RED = 0;
-const GREEN = 1;
-const BLUE = 2;
-const ALPHA = 3;
+// const _COLOR_RED = 0;
+// const _COLOR_GREEN = 1;
+// const _COLOR_BLUE = 2;
+// const _COLOR_ALPHA = 3;
 // Valid draw modes: pen, eraser, bucket
-const PEN = 0;
-const ERASER = 1;
-const BUCKET = 2;
-const RECT = 3;
-const RECTFILL = 4;
+// const T_PEN = 0;
+// const T_ERASER = 1;
+// const T_BUCKET = 2;
+// const T_RECT = 3;
+// const T_RECTFILL = 4;
 
 /*** Local Inheritance function ***/
 // First argument is parent class, second is properties to add on
@@ -229,7 +229,7 @@ var canvasObj = {
         this.contextDOM.lineJoin = "round";
         this.contextDOM.lineWidth = 5;
 
-        this.currentDrawMode = PEN;
+        this.currentDrawMode = T_PEN;
         this.penDown = false,
         this.__previous_coord__ = [undefined, undefined],
         this.colorComponents = [
@@ -248,10 +248,10 @@ var canvasObj = {
     },
 
     __initEvents__: function() {
-        _addColorEvents(RED);
-        _addColorEvents(GREEN);
-        _addColorEvents(BLUE);
-        _addColorEvents(ALPHA);
+        _addColorEvents(_COLOR_RED);
+        _addColorEvents(_COLOR_GREEN);
+        _addColorEvents(_COLOR_BLUE);
+        _addColorEvents(_COLOR_ALPHA);
         _addMouseEvents();
         _addButtonEvents();
     },
@@ -259,10 +259,10 @@ var canvasObj = {
     /* Public member functions */
     //Sets the color of the preview box to the currently selected RGBA value
     applyRGBA: function() {
-        this.setColor(this.colorComponents[RED].componentValue,
-                      this.colorComponents[GREEN].componentValue,
-                      this.colorComponents[BLUE].componentValue,
-                      this.colorComponents[ALPHA].componentValue);
+        this.setColor(this.colorComponents[_COLOR_RED].componentValue,
+                      this.colorComponents[_COLOR_GREEN].componentValue,
+                      this.colorComponents[_COLOR_BLUE].componentValue,
+                      this.colorComponents[_COLOR_ALPHA].componentValue);
         $('#fancy-color-preview')[0].style.backgroundColor = this.contextDOM.strokeStyle;
     },
 
@@ -290,7 +290,7 @@ var canvasObj = {
 
         //color to fill
         var fill_color = [];
-        for (var i = RED; i <= ALPHA; i++) {
+        for (var i = _COLOR_RED; i <= _COLOR_ALPHA; i++) {
             fill_color.push(this.colorComponents[i].componentValue);
         }
         fill_color[3] *= 255;
@@ -390,10 +390,10 @@ var canvasObj = {
     //Convert colorspace RGB to XYZ
     rgba_to_xyz: function(rgba) {
         //first convert rgba to rgb
-        var rgb = [(1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[RED],
-                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[GREEN],
-                   (1 - rgba[ALPHA]) * 255 + rgba[ALPHA] * rgba[BLUE]];
-        for (var i = RED; i <= BLUE; i++) {
+        var rgb = [(1 - rgba[_COLOR_ALPHA]) * 255 + rgba[_COLOR_ALPHA] * rgba[_COLOR_RED],
+                   (1 - rgba[_COLOR_ALPHA]) * 255 + rgba[_COLOR_ALPHA] * rgba[_COLOR_GREEN],
+                   (1 - rgba[_COLOR_ALPHA]) * 255 + rgba[_COLOR_ALPHA] * rgba[_COLOR_BLUE]];
+        for (var i = _COLOR_RED; i <= _COLOR_BLUE; i++) {
             rgb[i] /= 255;
 
             if (rgb[i] > 0.04045) {
@@ -404,9 +404,9 @@ var canvasObj = {
             rgb[i] *= 100;
         }
 
-        x = rgb[RED] * 0.4124 + rgb[GREEN] * 0.3576 + rgb[BLUE] * 0.1805;
-        y = rgb[RED] * 0.2126 + rgb[GREEN] * 0.7152 + rgb[BLUE] * 0.0722;
-        z = rgb[RED] * 0.0193 + rgb[GREEN] * 0.1192 + rgb[BLUE] * 0.9505;
+        x = rgb[_COLOR_RED] * 0.4124 + rgb[_COLOR_GREEN] * 0.3576 + rgb[_COLOR_BLUE] * 0.1805;
+        y = rgb[_COLOR_RED] * 0.2126 + rgb[_COLOR_GREEN] * 0.7152 + rgb[_COLOR_BLUE] * 0.0722;
+        z = rgb[_COLOR_RED] * 0.0193 + rgb[_COLOR_GREEN] * 0.1192 + rgb[_COLOR_BLUE] * 0.9505;
 
         return [x, y, z];
     },
@@ -530,7 +530,7 @@ function _enablePseudoButton(JqueryObj) {
 }
 
 function _addColorEvents(color) {
-    // pass by constant ex: RED, GREEN, BLUE, ALPHA
+    // pass by constant ex: _COLOR_RED, _COLOR_GREEN, _COLOR_BLUE, _COLOR_ALPHA
     var component = canvasObj.colorComponents[color];
     // Click + or - buttons
     $(component.minusId).on('click', function(){
@@ -570,19 +570,19 @@ function _addMouseEvents() {
         var mouseY = e.pageY - this.offsetTop;
 
         switch(canvasObj.currentDrawMode) {
-        case PEN:
-        case ERASER:
+        case T_PEN:
+        case T_ERASER:
             canvasObj.penDown = true;
             canvasObj.drawLine(mouseX, mouseY, false);
             break;
-        case BUCKET:
+        case T_BUCKET:
             canvasObj.fill(mouseX, mouseY);
     	    break;
-	case RECT:
+	case T_RECT:
 	    canvasObj.penDown = true;
 	    canvasObj.drawRect(mouseX, mouseY, false, false);
 	    break;
-	case RECTFILL:
+	case T_RECTFILL:
 	    canvasObj.penDown = true;
 	    canvasObj.drawRect(mouseX, mouseY, false, true);
 	    break;
@@ -595,17 +595,17 @@ function _addMouseEvents() {
         var mouseX = e.pageX - this.offsetLeft;
         var mouseY = e.pageY - this.offsetTop;
 	switch(canvasObj.currentDrawMode) {
-	case PEN:
-	case ERASER:
+	case T_PEN:
+	case T_ERASER:
 	    if (canvasObj.penDown) {
 		canvasObj.drawLine(mouseX, mouseY, true);
 	    }
 	    break;
-	case RECT:
+	case T_RECT:
 	    if (canvasObj.penDown) {
 		canvasObj.drawRect(mouseX, mouseY, true, false);
 	    }
-	case RECTFILL:
+	case T_RECTFILL:
 	    if (canvasObj.penDown) {
 		canvasObj.drawRect(mouseX, mouseY, true, true);
 	    }
@@ -616,14 +616,14 @@ function _addMouseEvents() {
 
     $('canvas').mouseup(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
+        if (canvasObj.currentDrawMode == T_PEN || canvasObj.currentDrawMode == T_ERASER) {
             canvasObj.penDown = false;
         }
     });
 
     $('canvas').mouseleave(function(e) {
         canvasObj.penDown = false;
-        if (canvasObj.currentDrawMode == PEN || canvasObj.currentDrawMode == ERASER) {
+        if (canvasObj.currentDrawMode == T_PEN || canvasObj.currentDrawMode == T_ERASER) {
             canvasObj.penDown = false;
         }
     });
@@ -655,7 +655,7 @@ function _addButtonEvents() {
     // Brush types
     $('#eraser').click(function() {
         canvasObj.setColor(255, 255, 255, 1);
-        canvasObj.currentDrawMode = ERASER;
+        canvasObj.currentDrawMode = T_ERASER;
 
         $('.tool-active').removeClass('tool-active');
         $('#eraser').addClass('tool-active');
@@ -663,7 +663,7 @@ function _addButtonEvents() {
 
     $('#pen').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = PEN;
+        canvasObj.currentDrawMode = T_PEN;
 
         $('.tool-active').removeClass('tool-active');
         $('#pen').addClass('tool-active');
@@ -671,7 +671,7 @@ function _addButtonEvents() {
 
     $('#bucket').click(function() {
         canvasObj.applyRGBA();
-        canvasObj.currentDrawMode = BUCKET;
+        canvasObj.currentDrawMode = T_BUCKET;
 
         $('.tool-active').removeClass('tool-active');
         $('#bucket').addClass('tool-active');
@@ -680,7 +680,7 @@ function _addButtonEvents() {
     // Shapes
     $('#rect').click(function() {
 	canvasObj.applyRGBA();
-	canvasObj.currentDrawMode = RECT;
+	canvasObj.currentDrawMode = T_RECT;
 
         $('.tool-active').removeClass('tool-active');
         $('#rect').addClass('tool-active');
@@ -688,7 +688,7 @@ function _addButtonEvents() {
 
     $('#rectFill').click(function() {
 	canvasObj.applyRGBA();
-	canvasObj.currentDrawMode = RECTFILL;
+	canvasObj.currentDrawMode = T_RECTFILL;
 
         $('.tool-active').removeClass('tool-active');
         $('#rectFill').addClass('tool-active');

@@ -1,3 +1,14 @@
 app.controller('SelectionController', ['$scope', function($scope) {
-    // do stuff here
+    // Static panels for now
+    $scope.panels = [
+	{
+	    name: "Sample"
+	},
+	{
+	    name: "Titles"
+	},
+	{
+	    name: "Consuetudium Duis Nonummy Mirum"
+	}
+    ];
 }]);

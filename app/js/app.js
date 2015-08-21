@@ -1,5 +1,5 @@
-var app = angular.module('PLMApp', ['ngRoute']);
-app.config(function ($routeProvider) {
+var app = angular.module('PLMApp', ['ngRoute', 'ngCookies']);
+app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider
     /*
       add this when done
@@ -36,6 +36,22 @@ app.config(function ($routeProvider) {
             templateUrl: 'views/canvas.html'
         })
         .otherwise({
-            redirectTo: '/canvas' // Point to most recent section of development for convenience.
+            redirectTo: '/selection' // Point to most recent section of development for convenience.
         });
-});
+
+    $locationProvider.html5Mode({
+	enabled: true,
+	requireBase: false
+    });
+}]);
+
+const _COLOR_RED = 0;
+const _COLOR_GREEN = 1;
+const _COLOR_BLUE = 2;
+const _COLOR_ALPHA = 3;
+
+const T_PEN = 0;
+const T_ERASER = 1;
+const T_BUCKET = 2;
+const T_RECT = 3;
+const T_RECTFILL = 4;
