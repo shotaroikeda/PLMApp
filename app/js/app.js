@@ -36,6 +36,6 @@ app.config(function ($routeProvider) {
             templateUrl: 'views/canvas.html'
         })
         .otherwise({
-            redirectTo: '/canvas' // Point to most recent section of development for convenience.
+            redirectTo: '/selection' // Point to most recent section of development for convenience.
         });
 });
