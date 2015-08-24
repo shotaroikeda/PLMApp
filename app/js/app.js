@@ -41,13 +41,13 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 
     /*
       bugs out for refreshing
-    $locationProvider.html5Mode({
-	enabled: true,
-	requireBase: false
-    });
+      $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+      });
     */
 
-    
+
 }]);
 
 const _COLOR_RED = 0;
