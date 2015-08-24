@@ -39,10 +39,15 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             redirectTo: '/selection' // Point to most recent section of development for convenience.
         });
 
-    $locationProvider.html5Mode({
-	enabled: true,
-	requireBase: false
-    });
+    /*
+      bugs out for refreshing
+      $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+      });
+    */
+
+
 }]);
 
 const _COLOR_RED = 0;
