@@ -5,14 +5,14 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4 cell-like" ng-repeat="panel in panels">
-        <a href="/canvas"> <!-- remember to link this to storyboard -->
+        <a href="#/canvas"> <!-- remember to link this to storyboard -->
           <div class="card-like-panel">
             <div class="one-panel">{{ panel.name | limitTo: 10 }}{{ panel.name.length > 9 ? '...':'' }}</div>
           </div>
         </a>
       </div>
       <div class="col-lg-4 col-md-4 col-sm-4 ">
-        <a href="/canvas">
+        <a href="#/canvas">
           <div class="card-like-panel add-panel">
             <div class="one-panel"> &plus; </div>
           </div>
