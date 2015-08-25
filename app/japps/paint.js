@@ -220,8 +220,11 @@ var canvasObj = {
     __constructor__: function() {
         /* Object Varibles */
         this.contextDOM =  $('#mainCanvas')[0].getContext("2d");
-        // Window: width is .85 because of column, height - 50 for navbar
-        this.contextDOM.canvas.width = window.innerWidth*.85;
+        // width is adjusted for column
+	// height is height - 50 for navbar
+	// TODO: instead of 220 and 220*.15, get max-width of column
+        this.contextDOM.canvas.width =
+	    window.innerWidth < 33 ? window.innerWidth*.85 : window.innerWidth - 220;
         this.contextDOM.canvas.height = window.innerHeight - 50;
 
         // TODO: different lineJoin for different tools

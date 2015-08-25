@@ -48,8 +48,31 @@
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: #333;
         border-right: 1px solid #eee;
+	max-width: 220px;
+    }
+    .sidebar-right {
+	right: 0;
+	left: auto;
+    }
+    #canvas > .sidebar-right {
+	max-width: 170px;
+	border: none;
+	overflow-y: scroll;
+	direction: rtl;
+    }
+    #canvas > .sidebar-right > .previews > #canvas-preview {
+	background-color: #fff;
+	width: 100%;
+	min-height: 100px;
+	height: auto;
+	display: block;
+	margin-bottom: 20px;
+	border-style: outset;
+	border-width: 5px;
+	border-color: #aaa;
     }
 }
+
 
 /* Sidebar navigation */
 .nav-sidebar {
@@ -97,12 +120,14 @@ input {
     margin-right: 0px;
 }
 
-.brush-form-input:hover, .brush-form-input:focus, .brush-form-input:active {
-                                                      background-color: #444444;
-                                                      border-style:none;
-                                                      color: #cccccc;
-                                                      outline: none !important;
-                                                  }
+.brush-form-input:hover,
+.brush-form-input:focus,
+.brush-form-input:active {
+    background-color: #444444;
+    border-style:none;
+    color: #cccccc;
+    outline: none !important;
+}
 
 .form-control {
     max-width: 50px;

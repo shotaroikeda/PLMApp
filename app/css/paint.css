@@ -5,6 +5,8 @@
 div > #canvas {
     text-align:center;
     margin: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #mainCanvas {
