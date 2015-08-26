@@ -128,12 +128,18 @@ input {
     outline: none !important;
 }
 
+
 .form-control {
     max-width: 50px;
     min-width: 50px;
     background-color: #292929;
     border-style: none;
     color: #ffffff;
+}
+
+
+#text-input.form-control {
+    max-width: none;
 }
 
 #fancy-color-preview {
