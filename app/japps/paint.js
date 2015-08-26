@@ -105,7 +105,7 @@ Line.prototype = _extend( Drawable, {
 /*** Rectangle class ***/
 function Rectangle(dom, fill) {
     Drawable.call(this, dom);
-
+    
     this.thickness = dom.lineWidth;
     this.color = dom.strokeStyle;
     // rename these 2 variables
@@ -126,7 +126,7 @@ Rectangle.prototype  = _extend( Drawable, {
     draw: function() {
 	this.dom.beginPath();
 	
-	this.dom.lineWith = this.size;
+	this.dom.lineWidth = this.thickness;
 	this.dom.lineJoin = this.style;
 	this.dom.lineCap = this.edges;
 
@@ -210,6 +210,7 @@ ColorComponent.prototype = {
     },
 };
 
+//TODO: make this object follow the pattern of other objects
 var canvasObj = {
     /* Setup functions
      * all member variables are in the constructor
@@ -516,7 +517,6 @@ var canvasObj = {
 	    newRect.setStart(x,y);
 	    newRect.setEnd(x,y);
 	    this.addDrawable(newRect);
-	    console.log(this.drawables);
 	}
 	this.drawCanvas();
     },
