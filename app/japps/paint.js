@@ -115,7 +115,6 @@ function Rectangle(dom, fill) {
     this.fill = fill !== 'undefined' ? fill : false;
     
     this.start = new Point(0, 0);
-    this.end = new Point(0, 0);
 
     this.width = 0;
     this.height = 0;
@@ -147,10 +146,27 @@ Rectangle.prototype  = _extend( Drawable, {
 	this.start.setPoint(x,y);
     },
     setEnd: function(x,y) {
-	this.end.setPoint(x,y);
-	this.width = this.end.x - this.start.x;
-	this.height = this.end.y - this.start.y;
+	this.width = x - this.start.x;
+	this.height = y - this.start.y;
     },
+
+});
+
+function Text(dom, fill, word) {
+    Drawable.call(this, dom);
+    this.word = word;
+    this.fontSize = this.dom.lineWidth + "px";
+    this.fontStyle = "Arial"; //default for now
+    this.font = this.fontSize + " " + this.fontStyle;
+};
+Text.prototype = _extend( Drawable, {
+    draw: function() {
+
+
+
+
+    },
+    
 
 });
 
