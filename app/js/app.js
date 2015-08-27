@@ -60,3 +60,4 @@ const T_ERASER = 1;
 const T_BUCKET = 2;
 const T_RECT = 3;
 const T_RECTFILL = 4;
+const T_TEXT = 5;

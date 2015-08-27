@@ -152,22 +152,27 @@ Rectangle.prototype  = _extend( Drawable, {
 
 });
 
-function Text(dom, fill, word) {
+function Text(dom, word) {
     Drawable.call(this, dom);
     this.word = word;
+    
+    this.color = dom.strokeStyle;
     this.fontSize = this.dom.lineWidth + "px";
     this.fontStyle = "Arial"; //default for now
     this.font = this.fontSize + " " + this.fontStyle;
+    
+    this.points[0] = new Point(0,0);
 };
 Text.prototype = _extend( Drawable, {
     draw: function() {
-
-
-
-
+	this.dom.fillStyle = this.color;
+	this.dom.font = this.font;
+	this.dom.fillText(this.word, this.points[0].x, this.points[0].y);
     },
-    
 
+    setPoint: function(x, y) {
+	this.points[0].setPoint(x, y);
+    },
 });
 
 
@@ -204,6 +209,11 @@ ColorComponent.prototype = {
     // Check if update value is necessary
     updateHTML: function() {
         $(this.classId).val(this.componentValue);
+    },
+
+    // Update actual value to what is in the HTML
+    updateValue: function() {
+	this.parseValue($(this.classId)[0].value);
     },
 
     /* Event listener functions */
@@ -500,6 +510,9 @@ var canvasObj = {
         this.clearCanvas();
         for (var i = 0; i < this.drawables.length; ++i)
             this.drawables[i].draw();
+	
+	// Go back to HTML size input value since draw sets them to each shape
+	canvasObj.setSize($('#size')[0].value);
     },
 
     addDrawable: function(d) {
@@ -533,6 +546,15 @@ var canvasObj = {
 	    newRect.setStart(x,y);
 	    newRect.setEnd(x,y);
 	    this.addDrawable(newRect);
+	}
+	this.drawCanvas();
+    },
+
+    drawText: function(x, y, mouseclick) {
+	if (mouseclick) {
+	    var newText = new Text(this.contextDOM, $('#text-input')[0].value);
+	    newText.setPoint(x, y);
+	    this.addDrawable(newText);
 	}
 	this.drawCanvas();
     },
@@ -605,8 +627,12 @@ function _addMouseEvents() {
 	    canvasObj.penDown = true;
 	    canvasObj.drawRect(mouseX, mouseY, false, true);
 	    break;
+	case T_TEXT:
+	    // need a preview function and variable
+	    canvasObj.drawText(mouseX, mouseY, true);
+	    break;
     	default:
-	       break;
+	    break;
         }
     });
 
@@ -624,10 +650,15 @@ function _addMouseEvents() {
 	    if (canvasObj.penDown) {
 		canvasObj.drawRect(mouseX, mouseY, true, false);
 	    }
+	    break;
 	case T_RECTFILL:
 	    if (canvasObj.penDown) {
 		canvasObj.drawRect(mouseX, mouseY, true, true);
 	    }
+	    break;
+	case T_TEXT:
+	    //canvasObj.drawText(mouseX, mouseY);
+	    break;
 	default:
 	    break;
 	}
@@ -713,6 +744,23 @@ function _addButtonEvents() {
         $('#rectFill').addClass('tool-active');
     });
 
+    $('#text-tool').click(function() {
+	canvasObj.applyRGBA();
+	canvasObj.currentDrawMode = T_TEXT;
+
+	$('.tool-active').removeClass('tool-active');
+	$('#text-tool').addClass('tool-active');
+    });
+
+    $('#text-input').click(function() {
+	canvasObj.applyRGBA();
+	canvasObj.currentDrawMode=T_TEXT;
+
+	$('.tool-active').removeClass('tool-active');
+	$('#text-tool').addClass('tool-active');
+    });
+    
+    // Undo and Redo
     $('#undo').click(function() {
         //WIP
 	canvasObj.undo();
